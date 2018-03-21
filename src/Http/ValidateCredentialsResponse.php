@@ -6,7 +6,7 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 class ValidateCredentialsResponse extends AbstractResponse
 {

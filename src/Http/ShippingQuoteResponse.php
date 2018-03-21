@@ -6,13 +6,13 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\ShippingQuoteBag;
 use Omniship\Consts;
 use Omniship\Helper\Helper;
-use Omniship\Speedy\Client;
+use Omniship\Rapido\Client;
 use ResultCalculationMS;
 
 class ShippingQuoteResponse extends AbstractResponse

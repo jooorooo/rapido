@@ -10,7 +10,7 @@ Georgi Nachev
 
 
 Latest version is available on github at :
-    - https://github.com/jooorooo/omniship-speedy
+    - https://github.com/jooorooo/omniship-rapido
 
 
 ## License
@@ -21,7 +21,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ## Description
 
 
-This library is a PHP Oriented Object client for the [Speedy.bg](http://speedy.bg/) SOAP API Services.
+This library is a PHP Oriented Object client for the [rapido.bg](http://www.rapido.bg/soap_help/) SOAP API Services.
 
 
 ## Setup 
@@ -31,7 +31,7 @@ You can use composer to use this library.
 ```php
 {
     "require": {
-		"simexis/omniship-speedy": "*"
+		"simexis/omniship-rapido": "*"
     }
 }
 ```

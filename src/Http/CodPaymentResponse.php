@@ -6,18 +6,18 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\CodPayment;
-use CODPayment AS SpeedyCODPayment;
+use CODPayment AS RapidoCODPayment;
 
 class CodPaymentResponse extends AbstractResponse
 {
     /**
      * The data contained in the response.
      *
-     * @var SpeedyCODPayment
+     * @var RapidoCODPayment
      */
     protected $data;
 

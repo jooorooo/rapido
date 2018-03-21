@@ -6,7 +6,7 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Omniship\Common\ServiceBag;
 
@@ -28,12 +28,12 @@ class ServicesResponse extends AbstractResponse
                 $result->push([
                     'id' => $service->getTypeId(),
                     'name' => $service->getName(),
-                    'support_fixed_time' => $service->getAllowanceFixedTimeDelivery()->getValue(),
-                    'support_cash_on_delivery' => $service->getAllowanceCashOnDelivery()->getValue(),
-                    'support_insurance' => $service->getAllowanceInsurance()->getValue(),
-                    'support_back_documents' => $service->getAllowanceBackDocumentsRequest()->getValue(),
-                    'support_back_receipt' => $service->getAllowanceBackReceiptRequest()->getValue(),
-                    'support_to_be_called' => $service->getAllowanceToBeCalled()->getValue(),
+                    'support_fixed_time' => null,
+                    'support_cash_on_delivery' => null,
+                    'support_insurance' => null,
+                    'support_back_documents' => null,
+                    'support_back_receipt' => null,
+                    'support_to_be_called' => null,
                 ]);
             }
         }

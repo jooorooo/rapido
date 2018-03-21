@@ -6,7 +6,7 @@
  * Time: 18:03 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 class TrackingParcelRequest extends AbstractRequest
 {

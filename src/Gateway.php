@@ -6,33 +6,33 @@
  * Time: 17:18 ч.
  */
 
-namespace Omniship\Speedy;
+namespace Omniship\Rapido;
 
 use Carbon\Carbon;
 use Omniship\Common\Address;
-use Omniship\Speedy\Http\CancelBillOfLadingRequest;
-use Omniship\Speedy\Http\CodPaymentRequest;
-use Omniship\Speedy\Http\CodPaymentsRequest;
-use Omniship\Speedy\Http\CreateBillOfLadingRequest;
-use Omniship\Speedy\Http\GetPdfRequest;
-use Omniship\Speedy\Http\RequestCourierRequest;
-use Omniship\Speedy\Http\ServicesRequest;
-use Omniship\Speedy\Http\ShippingQuoteRequest;
-use Omniship\Speedy\Http\TrackingParcelRequest;
+use Omniship\Rapido\Http\CancelBillOfLadingRequest;
+use Omniship\Rapido\Http\CodPaymentRequest;
+use Omniship\Rapido\Http\CodPaymentsRequest;
+use Omniship\Rapido\Http\CreateBillOfLadingRequest;
+use Omniship\Rapido\Http\GetPdfRequest;
+use Omniship\Rapido\Http\RequestCourierRequest;
+use Omniship\Rapido\Http\ServicesRequest;
+use Omniship\Rapido\Http\ShippingQuoteRequest;
+use Omniship\Rapido\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
-use Omniship\Speedy\Http\TrackingParcelsRequest;
-use Omniship\Speedy\Http\ValidateAddressRequest;
-use Omniship\Speedy\Http\ValidateCredentialsRequest;
-use Omniship\Speedy\Http\ValidatePostCodeRequest;
+use Omniship\Rapido\Http\TrackingParcelsRequest;
+use Omniship\Rapido\Http\ValidateAddressRequest;
+use Omniship\Rapido\Http\ValidateCredentialsRequest;
+use Omniship\Rapido\Http\ValidatePostCodeRequest;
 
 class Gateway extends AbstractGateway
 {
 
-    private $name = 'Speedy';
+    private $name = 'Rapido';
 
     private $client;
 
-    const TRACKING_URL = 'https://www.speedy.bg/bg/track-shipment?shipmentNumber=%s';
+    const TRACKING_URL = 'http://www.rapido.bg/information/tracking-tovaritelnitsa?tnomer=%s';
 
     /**
      * @return string
@@ -232,7 +232,7 @@ class Gateway extends AbstractGateway
     public function getClient()
     {
         if (is_null($this->client)) {
-            $this->client = new Client($this->getUsername(), $this->getPassword());
+            $this->client = new Client($this->getUsername(), $this->getPassword(), $this->getTestMode());
         }
         return $this->client;
     }

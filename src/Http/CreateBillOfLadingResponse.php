@@ -6,11 +6,11 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\Bill\Create;
-use Omniship\Speedy\Client;
+use Omniship\Rapido\Client;
 use ResultBOL;
 use ResultAmounts;
 use ResultParcelInfo;

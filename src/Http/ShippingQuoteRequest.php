@@ -6,11 +6,11 @@
  * Time: 16:55 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Omniship\Common\PieceBag;
 use Omniship\Consts;
-use Omniship\Speedy\Helper\Convert;
+use Omniship\Rapido\Helper\Convert;
 use ParamCalculation;
 use Carbon\Carbon;
 

@@ -6,7 +6,7 @@
  * Time: 16:55 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 class RequestCourierRequest extends AbstractRequest
 {

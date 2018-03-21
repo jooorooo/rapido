@@ -6,16 +6,16 @@
  * Time: 16:55 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Omniship\Message\AbstractRequest AS BaseAbstractRequest;
-use Omniship\Speedy\Client AS SpeedyClient;
+use Omniship\Rapido\Client AS RapidoClient;
 
 abstract class AbstractRequest extends BaseAbstractRequest
 {
 
     /**
-     * @var SpeedyClient
+     * @var RapidoClient
      */
     protected $client;
 
@@ -52,12 +52,12 @@ abstract class AbstractRequest extends BaseAbstractRequest
     abstract protected function createResponse($data);
 
     /**
-     * @return SpeedyClient
+     * @return RapidoClient
      */
     public function getClient()
     {
         if(is_null($this->client)) {
-            $this->client = new SpeedyClient($this->getUsername(), $this->getPassword());
+            $this->client = new RapidoClient($this->getUsername(), $this->getPassword(), $this->getTestMode());
         }
         return $this->client;
     }

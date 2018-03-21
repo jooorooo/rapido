@@ -6,12 +6,12 @@
  * Time: 16:55 ч.
  */
 
-namespace Omniship\Speedy\Http;
+namespace Omniship\Rapido\Http;
 
 use Omniship\Common\Address;
 use Omniship\Common\PieceBag;
 use Omniship\Consts;
-use Omniship\Speedy\Helper\Convert;
+use Omniship\Rapido\Helper\Convert;
 use ParamCalculation;
 use ParamClientData;
 use ParamPhoneNumber;
@@ -23,7 +23,7 @@ use ParamPicking;
 class CreateBillOfLadingRequest extends AbstractRequest
 {
 
-    const SpeedyClientId = null; //An optional value used to identify user's client software. Please verify the allowed values with Speedy's IT Department.
+    const RapidoClientId = null; //An optional value used to identify user's client software. Please verify the allowed values with Rapido's IT Department.
 
     /**
      * @return ParamCalculation
@@ -114,7 +114,7 @@ class CreateBillOfLadingRequest extends AbstractRequest
         }
         $picking->setReceiver($receiver);
 
-        $picking->setClientSystemId(self::SpeedyClientId);
+        $picking->setClientSystemId(self::RapidoClientId);
         $picking->setRef1($this->getTransactionId());
 
         if (!is_null($priority_time = $this->getPriorityTime())) {
