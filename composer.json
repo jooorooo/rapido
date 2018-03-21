@@ -1,0 +1,28 @@
+{
+    "name": "simexis/omniship-speedy",
+
+    "description": "PHP library to communicate with the Speedy.bg Soap Services.",
+
+    "require": {
+      "php": "^7",
+      "simexis/omniship": "dev-master"
+    },
+
+    "license": "LGPL-2.1",
+
+    "autoload": {
+      "psr-4": {
+        "Omniship\\Speedy\\": "src"
+      },
+      "classmap": [
+        "lib"
+      ]
+    },
+
+	"authors": [
+        {
+            "name": "Georgi Nachev",
+            "email": "jooorooo@gmail.com"
+        }
+    ]
+}
