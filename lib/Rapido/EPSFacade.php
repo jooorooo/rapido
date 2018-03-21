@@ -54,26 +54,34 @@ class EPSFacade {
     }
 
     /**
-     * Returns the list of courier services valid on this date
-     * @since 1.0
-     * @throws ClientException Thrown in case EPS interface implementation is not set
-     * @throws ServerException Thrown in case communication with server has failed
-     * @return array List of ResultCourierService instances
+     * Method to call the operation originally named getServices
+     * Documentation : Този метод връща списък от предлагани услуги
+     * @return false|ResultCourierService[]
      */
     public function getServices() {
         $this->checkStateBeforeCall();
         return $this->_epsInterfaceImpl->getServices($this->getLoginParams());
     }
-    
+
     /**
      * Method to call the operation originally named getSubServices
      * Documentation : Този метод връща списък от време за изпълнение да дадена услуга
      * @param integer $serviceId
-     * @return array
+     * @return false|ResultCourierService[]
      */
     public function getSubServices($serviceId) {
         $this->checkStateBeforeCall();
         return $this->_epsInterfaceImpl->getSubServices($this->getLoginParams(), $serviceId);
+    }
+
+    /**
+     * Method to call the operation originally named getSoapCouriers
+     * Documentation : Този метод връща списък на куриерите
+     * @return false|ResultCouriers[]
+     */
+    public function getCouriers() {
+        $this->checkStateBeforeCall();
+        return $this->_epsInterfaceImpl->getCouriers($this->getLoginParams());
     }
 
     /**

@@ -63,4 +63,20 @@ class EPSSOAPInterfaceImpl extends SoapClient implements EPSInterface {
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCouriers($loginParam) {
+        try {
+            $response = parent::getSoapCouriers($loginParam);
+            $arrListServices = array();
+            foreach($response AS $arrStdServices) {
+                $arrListServices[] = new ResultCouriers($arrStdServices);
+            }
+            return $arrListServices;
+        } catch (SoapFault $sf) {
+            throw new ServerException($sf);
+        }
+    }
+
 }

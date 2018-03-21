@@ -11,18 +11,26 @@ interface EPSInterface {
     /**
      * Method to call the operation originally named getServices
      * Documentation : Този метод връща списък от предлагани услуги
-     * @param $loginParam $_loginparam
-     * @return array
+     * @param $loginParam $loginParam
+     * @return false|ResultCourierService[]
      */
     public function getServices($loginParam);
 
     /**
      * Method to call the operation originally named getSubServices
      * Documentation : Този метод връща списък от време за изпълнение да дадена услуга
-     * @param $loginParam $_loginparam
-     * @param integer $_serviceId
-     * @return array
+     * @param $loginParam $loginParam
+     * @param integer $serviceId
+     * @return false|ResultCourierService[]
      */
-    public function getSubServices($loginParam, $_serviceId);
+    public function getSubServices($loginParam, $serviceId);
+
+    /**
+     * Method to call the operation originally named getSoapCouriers
+     * Documentation : Този метод връща списък на куриерите
+     * @param $loginParam $loginParam
+     * @return false|ResultCouriers[]
+     */
+    public function getCouriers($loginParam);
 
 }

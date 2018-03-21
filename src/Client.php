@@ -4,6 +4,8 @@
  * User: joro
  * Date: 16.5.2017 г.
  * Time: 15:12 ч.
+ *
+ * http://www.rapido.bg/soap_help/
  */
 
 namespace Omniship\Rapido;
