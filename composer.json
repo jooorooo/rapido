@@ -1,7 +1,7 @@
 {
-    "name": "simexis/omniship-speedy",
+    "name": "simexis/omniship-rapido",
 
-    "description": "PHP library to communicate with the Speedy.bg Soap Services.",
+    "description": "PHP library to communicate with the rapido.bg Soap Services.",
 
     "require": {
       "php": "^7",
@@ -12,7 +12,7 @@
 
     "autoload": {
       "psr-4": {
-        "Omniship\\Speedy\\": "src"
+        "Omniship\\Rapido\\": "src"
       },
       "classmap": [
         "lib"
