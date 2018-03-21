@@ -29,7 +29,17 @@ class EPSSOAPInterfaceImpl extends SoapClient implements EPSInterface {
             $response = parent::getServices($loginParam);
             $arrListServices = array();
             foreach($response AS $arrStdServices) {
-                $arrListServices[] = new ResultCourierService($arrStdServices);
+                $subServices = parent::getSubServices($loginParam, $arrStdServices['DATA']);
+                if($subServices) {
+                    foreach($subServices AS $arrStdSubServices) {
+                        $arrListServices[] = new ResultCourierService([
+                            'DATA' => implode('_', array($arrStdServices['DATA'], $arrStdSubServices['DATA'])),
+                            'LABEL' => implode(' - ', array($arrStdServices['LABEL'], $arrStdSubServices['LABEL']))
+                        ]);
+                    }
+                } else {
+                    $arrListServices[] = new ResultCourierService($arrStdServices);
+                }
             }
             return $arrListServices;
         } catch (SoapFault $sf) {

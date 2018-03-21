@@ -113,6 +113,24 @@ class Client
     }
 
     /**
+     * @param boolean $test_mode
+     * @return Client
+     */
+    public function setTestMode($test_mode)
+    {
+        $this->test_mode = $test_mode;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getTestMode()
+    {
+        return $this->test_mode;
+    }
+
+    /**
      * @param string $username
      * @return Client
      */
