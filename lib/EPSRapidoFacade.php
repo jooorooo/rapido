@@ -136,7 +136,7 @@ class EPSRapidoFacade {
      * @return ResponseCity[]
      * @throws RapidoException
      */
-    public function getCities($country_id, $start = null, $count = null) {
+    public function getCities($country_id = 100, $start = null, $count = null) {
         $instance = new RapidoServiceGet($this->getDefaultParams());
         if(($result = $instance->getCityes($this->getLoginParams(), $country_id, $start, $count)) === false) {
             /** @var SoapFault $exception */
