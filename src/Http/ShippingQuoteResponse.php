@@ -11,6 +11,7 @@ namespace Omniship\Rapido\Http;
 use Omniship\Common\ShippingQuoteBag;
 use Omniship\Consts;
 use ResponseQuote;
+use Carbon\Carbon;
 
 class ShippingQuoteResponse extends AbstractResponse
 {
@@ -33,6 +34,10 @@ class ShippingQuoteResponse extends AbstractResponse
                     'name' => $service->getName(),
                     'description' => null,
                     'price' => $service->getTOTAL(),
+                    'pickup_date' => Carbon::now($this->request->getSenderTimeZone()),
+                    'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
+                    'delivery_date' => null,
+                    'delivery_time' => null,
                     'currency' => 'BGN',//@todo return price in BGN
                     'tax' => $service->getDDS(),
                     'insurance' => $service->getZastrahovka(),
