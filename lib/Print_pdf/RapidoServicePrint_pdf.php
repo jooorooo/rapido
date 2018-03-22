@@ -24,8 +24,8 @@ class RapidoServicePrint_pdf extends RapidoWsdlClass
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param anyType $_nomer
-     * @param anyType $_pdfformat
+     * @param mixed $_nomer
+     * @param mixed $_pdfformat
      * @return string
      */
     public function print_pdf($_loginparam,$_nomer,$_pdfformat)

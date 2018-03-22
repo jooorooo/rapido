@@ -24,8 +24,8 @@ class RapidoServiceList extends RapidoWsdlClass
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param anyType $_name
-     * @param anyType $_country
+     * @param string $_name
+     * @param int $_country
      * @return array
      */
     public function listSites($_loginparam,$_name,$_country)

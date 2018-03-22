@@ -131,16 +131,6 @@ if($rapidoServiceCreate_order->create_order($_loginparam,$_order_info))
 else
     print_r($rapidoServiceCreate_order->getLastError());
 
-/***************************************
- * Example for RapidoServiceCheck_siteid
- */
-$rapidoServiceCheck_siteid = new RapidoServiceCheck_siteid();
-// sample call for RapidoServiceCheck_siteid::check_siteid()
-if($rapidoServiceCheck_siteid->check_siteid($_loginparam,$_siteid))
-    print_r($rapidoServiceCheck_siteid->getResult());
-else
-    print_r($rapidoServiceCheck_siteid->getLastError());
-
 /************************************
  * Example for RapidoServicePrint_pdf
  */
@@ -252,12 +242,3 @@ else
     print_r($rapidoServiceCheck->getLastError());
 
 
-/****************************************
- * Example for RapidoServiceFan_curl_open
- */
-$rapidoServiceFan_curl_open = new RapidoServiceFan_curl_open();
-// sample call for RapidoServiceFan_curl_open::fan_curl_open()
-if($rapidoServiceFan_curl_open->fan_curl_open($_url,$_data))
-    print_r($rapidoServiceFan_curl_open->getResult());
-else
-    print_r($rapidoServiceFan_curl_open->getLastError());

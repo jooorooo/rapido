@@ -234,6 +234,24 @@ class EPSRapidoFacade
     }
 
     /**
+     * Documentation : Проверка за обмяна със ПОДИЗПЪЛНИТЕЛ.
+     * @param $city_id
+     * @return integer
+     * @throws RapidoException
+     */
+    public function checkSiteId($city_id)
+    {
+        $instance = new RapidoServiceCheck($this->getDefaultParams());
+        if (($result = $instance->checkSiteId($this->getLoginParams(), $city_id)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceCheck::checkSiteId');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return (int)($result != 'no');
+    }
+
+    /**
      * Documentation : Този метод връща списък на обектите на клиента
      * @return ResponseMyObjects[]
      * @throws RapidoException

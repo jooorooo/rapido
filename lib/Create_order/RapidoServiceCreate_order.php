@@ -24,7 +24,7 @@ class RapidoServiceCreate_order extends RapidoWsdlClass
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param UNKNOWN $_order_info
+     * @param array $_order_info
      * @return array
      */
     public function create_order($_loginparam,$_order_info)

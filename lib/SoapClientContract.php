@@ -33,6 +33,22 @@
  * @method array getInvoiceType($_loginparam)
  * @method array getInvoices($_loginparam,$_start,$_end)
  * @method array calculate($_loginparam,$_calculation)
+ * @method array cancellTovaritelnica($_loginparam,$_tovaritelnica)
+ * @method array checkOrders($_loginparam,$_nomera)
+ * @method array checkCityFixChas($_loginparam,$_siteid)
+ * @method array check_siteid($_loginparam,$_siteid)
+ * @method array create_order($_loginparam,$_order_info)
+ * @method array enrollOrders($_loginparam,$_nomera,$_curier)
+ * @method array listSites($_loginparam,$_name,$_country)
+ * @method array print_int_pdf($_loginparam,$_nomer)
+ * @method array print_pdf($_loginparam,$_nomer,$_pdfformat)
+ * @method array requestCurier($_loginparam,$_broi,$_teglo,$_readiness,$_sendoffice)
+ * @method array setPrintSettings($_loginparam,$_settings)
+ * @method array track_order($_loginparam,$_nomer)
+ * @method array track_order_array($_loginparam,$_tarray)
+ * @method array track_order_ref($_loginparam,$_nomer)
+ * @method array track_order_ref_array($_loginparam,$_tarray)
+ * @method array track_request($_loginparam,$_nomer)
  */
 interface SoapClientContract
 {

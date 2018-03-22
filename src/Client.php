@@ -191,6 +191,20 @@ class Client
     }
 
     /**
+     * @param $city_id
+     * @return bool|integer
+     */
+    public function checkSiteId($city_id)
+    {
+        try {
+            return $this->getEPSFacade()->checkSiteId($city_id);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
      * @return bool|ResponseMyObjects[]
      */
     public function getMyObjects()
