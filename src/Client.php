@@ -17,6 +17,10 @@ use ResponseResultCourierService;
 use ResponseCountry;
 use ResponseCouriers;
 use ResponseQuote;
+use ResponseCity;
+use ResponseMyObjects;
+use ResponseStreet;
+use ResponseOffice;
 
 class Client
 {
@@ -74,7 +78,7 @@ class Client
      */
     public function getServices()
     {
-        if(!is_null($this->services)) {
+        if (!is_null($this->services)) {
             return $this->services;
         }
 
@@ -143,40 +147,95 @@ class Client
     }
 
     /**
+     * @param $city_id
+     * @param null $start
+     * @param null $count
+     * @return bool|ResponseStreet[]
+     */
+    public function getStreets($city_id, $start = null, $count = null)
+    {
+        try {
+            return $this->getEPSFacade()->getStreets($city_id, $start, $count);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @param $city_id
+     * @return bool|ResponseOffice[]
+     */
+    public function getOffices($city_id)
+    {
+        try {
+            return $this->getEPSFacade()->getOffices($city_id);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @param $city_id
+     * @return bool|integer
+     */
+    public function checkCityFixChas($city_id)
+    {
+        try {
+            return $this->getEPSFacade()->checkCityFixChas($city_id);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @return bool|ResponseMyObjects[]
+     */
+    public function getMyObjects()
+    {
+        try {
+            return $this->getEPSFacade()->getMyObjects();
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @param $object_id
+     * @return bool|ResponseMyObjects
+     */
+    public function getMyObjectInfo($object_id)
+    {
+        try {
+            return $this->getEPSFacade()->getMyObjectInfo($object_id);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
      * @param array $parameters
-     * @param array|null $allowed_services
      * @return ResponseQuote[]
      */
-    public function calculate(array $parameters, array $allowed_services = null)
+    public function calculate(array $parameters)
     {
         $service_id = !empty($parameters['service']) ? $parameters['service'] : 0;
-        if(!$service_id) {
-            return [];
-        }
-        if(!in_array($service_id, [3,7,9])) {
-            if (empty($allowed_services)) {
-                $allowed_services = array_map(function (ResponseResultCourierService $service) {
-                    return $service->getTypeId();
-                }, $this->getServices());
-            }
-            $sub_services = array_filter($allowed_services, function($id) use($service_id) {
-                return strpos($id, $service_id . '_') === 0;
-            });
-
-        } else {
-            $sub_services = [0];
-        }
+        $sub_services = !empty($parameters['subservice']) && is_array($parameters['subservice']) ? $parameters['subservice'] : [];
 
         $services = [];
-        foreach($this->getSubServices($service_id) AS $s) {
+        foreach ($this->getSubServices($service_id) AS $s) {
             $services[$s->getTypeId()] = $s->getName();
         }
 
         $quotes = [];
-        foreach($sub_services AS $sub) {
+        foreach ($sub_services AS $sub) {
             try {
                 $parameters['subservice'] = Arr::last(explode('_', $sub));
-                $quotes[] =  $this->getEPSFacade()->calculate($parameters, $services);
+                $quotes[] = $this->getEPSFacade()->calculate($parameters, $services);
             } catch (RapidoException $e) {
                 $quotes[] = new ResponseQuote([
                     'id' => $sub,

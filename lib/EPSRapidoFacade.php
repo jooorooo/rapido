@@ -140,16 +140,119 @@ class EPSRapidoFacade {
         $instance = new RapidoServiceGet($this->getDefaultParams());
         if(($result = $instance->getCityes($this->getLoginParams(), $country_id, $start, $count)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getSoapCouriers');
+            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getCityes');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
-var_dump($result); exit;
+
         $list = [];
-        foreach($result AS $country) {
-            $list[] = new ResponseCountry($country);
+        foreach($result AS $city) {
+            $list[] = new ResponseCity($city);
         }
 
         return $list;
+    }
+
+    /**
+     * Documentation : Този метод връща списък на улиците
+     * @param string $city_id
+     * @param null $start
+     * @param null $count
+     * @return ResponseStreet[]
+     * @throws RapidoException
+     */
+    public function getStreets($city_id, $start = null, $count = null) {
+        $instance = new RapidoServiceGet($this->getDefaultParams());
+        if(($result = $instance->getStreets($this->getLoginParams(), $city_id, $start, $count)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getStreets');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        $list = [];
+        foreach($result AS $street) {
+            $list[] = new ResponseStreet($street);
+        }
+
+        return $list;
+    }
+
+    /**
+     * Documentation : Връща списък на офисите за населено място
+     * @param $city_id
+     * @return ResponseOffice[]
+     * @throws RapidoException
+     */
+    public function getOffices($city_id) {
+        $instance = new RapidoServiceGet($this->getDefaultParams());
+        if(($result = $instance->getOfficesCity($this->getLoginParams(), $city_id)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getOfficesCity');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        $list = [];
+        foreach($result AS $office) {
+            if(!empty($office['DATA'])) {
+                $list[] = new ResponseOffice($office);
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * Documentation : Връща информация дали може да се изпраща с фиксиран час за населено място
+     * @param $city_id
+     * @return integer
+     * @throws RapidoException
+     */
+    public function checkCityFixChas($city_id) {
+        $instance = new RapidoServiceCheck($this->getDefaultParams());
+        if(($result = $instance->checkCityFixChas($this->getLoginParams(), $city_id)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceCheck::checkCityFixChas');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return (int)$result;
+    }
+
+    /**
+     * Documentation : Този метод връща списък на обектите на клиента
+     * @return ResponseMyObjects[]
+     * @throws RapidoException
+     */
+    public function getMyObjects() {
+        $instance = new RapidoServiceGet($this->getDefaultParams());
+        if(($result = $instance->getMyObjects($this->getLoginParams())) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getMyObjects');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        $list = [];
+        foreach($result AS $object) {
+            $list[] = new ResponseMyObjects($object);
+        }
+
+        return $list;
+    }
+
+    /**
+     * Documentation : Този метод връща информация за обекта на клиента
+     * @param $object_id
+     * @return ResponseMyObjects
+     * @throws RapidoException
+     */
+    public function getMyObjectInfo($object_id) {
+        $instance = new RapidoServiceGet($this->getDefaultParams());
+        if(($result = $instance->getMyObjectInfo($this->getLoginParams(), $object_id)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getMyObjectInfo');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return new ResponseMyObjects($result);
     }
 
     /**

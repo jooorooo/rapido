@@ -25,45 +25,11 @@
  */
 
 
-/*****************************
- * Example for RapidoServiceDS
- */
-$rapidoServiceDS = new RapidoServiceDS();
-// sample call for RapidoServiceDS::DSoapServerClass()
-if($rapidoServiceDS->DSoapServerClass())
-    print_r($rapidoServiceDS->getResult());
-else
-    print_r($rapidoServiceDS->getLastError());
-
 /******************************
  * Example for RapidoServiceGet
  */
 $rapidoServiceGet = new RapidoServiceGet();
 
-if($rapidoServiceGet->getCityes($_loginparam,$_country,$_start,$_count))
-    print_r($rapidoServiceGet->getResult());
-else
-    print_r($rapidoServiceGet->getLastError());
-// sample call for RapidoServiceGet::getStreets()
-if($rapidoServiceGet->getStreets($_loginparam,$_siteid,$_start,$_count))
-    print_r($rapidoServiceGet->getResult());
-else
-    print_r($rapidoServiceGet->getLastError());
-// sample call for RapidoServiceGet::getMyObjectInfo()
-if($rapidoServiceGet->getMyObjectInfo($_loginparam,$_sendoffice))
-    print_r($rapidoServiceGet->getResult());
-else
-    print_r($rapidoServiceGet->getLastError());
-// sample call for RapidoServiceGet::getMyObjects()
-if($rapidoServiceGet->getMyObjects($_uNKNOWN))
-    print_r($rapidoServiceGet->getResult());
-else
-    print_r($rapidoServiceGet->getLastError());
-// sample call for RapidoServiceGet::getOfficesCity()
-if($rapidoServiceGet->getOfficesCity($_loginparam,$_siteid))
-    print_r($rapidoServiceGet->getResult());
-else
-    print_r($rapidoServiceGet->getLastError());
 // sample call for RapidoServiceGet::getRazhodOrderInfo()
 if($rapidoServiceGet->getRazhodOrderInfo($_loginparam,$_orderid))
     print_r($rapidoServiceGet->getResult());
@@ -115,7 +81,7 @@ if($rapidoServiceGet->getPrietivOfis($_loginparam,$_start,$_end))
 else
     print_r($rapidoServiceGet->getLastError());
 // sample call for RapidoServiceGet::getInvoiceType()
-if($rapidoServiceGet->getInvoiceType($_uNKNOWN))
+if($rapidoServiceGet->getInvoiceType($_loginparam))
     print_r($rapidoServiceGet->getResult());
 else
     print_r($rapidoServiceGet->getLastError());
@@ -284,11 +250,7 @@ if($rapidoServiceCheck->checkOrders($_loginparam,$_nomera))
     print_r($rapidoServiceCheck->getResult());
 else
     print_r($rapidoServiceCheck->getLastError());
-// sample call for RapidoServiceCheck::checkCityFixChas()
-if($rapidoServiceCheck->checkCityFixChas($_loginparam,$_siteid))
-    print_r($rapidoServiceCheck->getResult());
-else
-    print_r($rapidoServiceCheck->getLastError());
+
 
 /****************************************
  * Example for RapidoServiceFan_curl_open
@@ -299,13 +261,3 @@ if($rapidoServiceFan_curl_open->fan_curl_open($_url,$_data))
     print_r($rapidoServiceFan_curl_open->getResult());
 else
     print_r($rapidoServiceFan_curl_open->getLastError());
-
-/************************************
- * Example for RapidoServiceGetintpdf
- */
-$rapidoServiceGetintpdf = new RapidoServiceGetintpdf();
-// sample call for RapidoServiceGetintpdf::getintpdf()
-if($rapidoServiceGetintpdf->getintpdf($_anyType))
-    print_r($rapidoServiceGetintpdf->getResult());
-else
-    print_r($rapidoServiceGetintpdf->getLastError());

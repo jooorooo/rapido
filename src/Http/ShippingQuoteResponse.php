@@ -34,8 +34,8 @@ class ShippingQuoteResponse extends AbstractResponse
                     'name' => $service->getName(),
                     'description' => null,
                     'price' => $service->getTOTAL(),
-                    'pickup_date' => Carbon::now($this->request->getSenderTimeZone()),
-                    'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
+                    'pickup_date' => null,
+                    'pickup_time' => null,
                     'delivery_date' => null,
                     'delivery_time' => null,
                     'currency' => 'BGN',//@todo return price in BGN

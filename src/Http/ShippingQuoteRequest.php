@@ -8,45 +8,89 @@
 
 namespace Omniship\Rapido\Http;
 
-use Omniship\Common\PieceBag;
 use Omniship\Consts;
-use Omniship\Rapido\Helper\Convert;
-use ParamCalculation;
-use Carbon\Carbon;
+use Omniship\Rapido\Client;
+use ResponseResultCourierService;
+use Omniship\Helper\Arr;
 
 class ShippingQuoteRequest extends AbstractRequest
 {
 
     /**
-     * @return ParamCalculation
+     * @return array
      */
     public function getData()
     {
-//3, 7, 9
-//        var_dump($this->getClient()->getCountries());exit;
-        $myPriceArray = array();
-        $myPriceArray['service']=1;
-//        $myPriceArray['subservice']=18;
-//        $myPriceArray['country_b']=300;
-//        $myPriceArray['service']=1; // Ползва се getServices за да се видят ID-тата на услугите. В примера 1 е "бързи градски"
-//        $myPriceArray['subservice']=18; // Ползва се getSubServices за да се видят ID-тата на  подуслугите (време за изпълнение). В примера 18 е "48 часа икономична"
-        $myPriceArray['fix_chas']=0; // 0 или 1 (Съответно ако е 1 ще се ползва фиксиран час, а ако е 0 няма да е със фиксиран час.
-        $myPriceArray['return_receipt']=0; // 0 или 1 (Съответно ако е 1 ще се иска обратна разписка, и 0 за без
-        $myPriceArray['return_doc']=0; // 0 или 1 (Съответно ако е 1 ще има обратни документи, и 0 за без
-        $myPriceArray['nal_platej']=50; // Сума за наложен платеж. Оставя се 0 ако е без наложен платеж. За десетичната запетая се използва символа точка "."
-        $myPriceArray['zastrahovka']=50; // Сума за застраховка. Оставя се 0 ако е без застраховка. За десетичната запетая се използва символа точка "."
-        $myPriceArray['teglo']=2.5; // Тегло. За десетичната запетая се използва символа точка "."
-        //$myPriceArray['country_b']=100; // ID на държава(по ISO). Подава се само ако е международна пратка.
-        $myPriceArray['ZASMETKA']=0; //Payer 0-sender, 1-receiver
-        $myPriceArray['CENOVA_LISTA']=1; //Calculation Price List 0-payer, 1-sender,2-receiver
 
+        //3, 7, 9 services is without sub services
+        $data = [];
+        if(!empty($service_id = $this->getServiceId())) {
+            if(strpos($service_id, '_') !== false) {
+                list($service_id, $sub_service_id) = explode('_', $service_id);
+                $data['service'] = $service_id;
+                $data['subservice'] = [$sub_service_id];
+            } else {
+                $data['service'] = $service_id;
+            }
+        } elseif(!empty($sender_address = $this->getSenderAddress()) && !empty($receiver_address = $this->getReceiverAddress())) {
+            if($sender_address->getCountry() && $receiver_address->getCountry() && $sender_address->getCountry()->getId() != $receiver_address->getCountry()->getId()) {
+                $data['service'] = 3;
+            } elseif($sender_address->getCity() && $receiver_address->getCity() && $sender_address->getCity()->getId() != $receiver_address->getCity()->getId()) {
+                $data['service'] = 2;
+            } elseif($sender_address->getCity() && $receiver_address->getCity() && $sender_address->getCity()->getId() == $receiver_address->getCity()->getId()) {
+                $data['service'] = 1;
+            }
+        }
 
-        return $myPriceArray;
+        if(empty($data['subservice']) && !empty($data['service'])) {
+            if(in_array($data['service'], [3, 7, 9])) {
+                $data['subservice'] = [0];
+            } elseif(!empty($allowed_services = $this->getAllowedServices())) {
+                $data['subservice'] = array_map(function($sub_service) {
+                    return Arr::last(explode('_', $sub_service));
+                }, array_filter($allowed_services, function($id) use($data) {
+                    return strpos($id, $data['service'] . '_') === 0;
+                }));
+            }
+        }
+
+        if(empty($data['subservice']) && !empty($data['service']) && !in_array($data['service'], [3,7,9])) {
+            $data['subservice'] = array_map(function(ResponseResultCourierService $sub_service) {
+                return $sub_service->getTypeId();
+            }, $this->getClient()->getSubServices($data['service']));
+        }
+
+        if(!empty($receiver_address = $this->getReceiverAddress()) && !empty($country = $receiver_address->getCountry()) && $country->getId() != Client::BULGARIA) {
+            $data['country_b'] = $country->getId();
+        }
+
+        $data['fix_chas'] = (int)$this->getOtherParameters('fixed_time_delivery');
+        $data['return_receipt'] = (int)$this->getBackReceipt();
+        $data['return_doc'] = (int)$this->getBackDocuments();
+        $data['nal_platej'] = (float)$this->getCashOnDeliveryAmount();
+        $data['zastrahovka'] = (float)$this->getInsuranceAmount();
+        $data['teglo'] = (float)$this->getWeight();
+
+        if($this->getPayer() != Consts::PAYER_RECEIVER) {
+            $data['ZASMETKA'] = 0;
+        } elseif($this->getPayer() == Consts::PAYER_RECEIVER) {
+            $data['ZASMETKA'] = 1;
+        }
+
+        if($this->getOtherParameters('price_list') == Consts::PAYER_SENDER) {
+            $data['CENOVA_LISTA'] = 1;
+        } elseif($this->getOtherParameters('price_list') == Consts::PAYER_RECEIVER) {
+            $data['CENOVA_LISTA'] = 2;
+        } else {
+            $data['CENOVA_LISTA'] = 0;
+        }
+
+        return $data;
     }
 
     public function sendData($data)
     {
-        $response = $this->getClient()->calculate($data, $this->getAllowedServices());
+        $response = $this->getClient()->calculate($data);
         return $this->createResponse(!$response && $this->getClient()->getError() ? $this->getClient()->getError() : $response);
     }
 
