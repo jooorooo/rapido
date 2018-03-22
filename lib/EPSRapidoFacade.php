@@ -20,12 +20,18 @@ class EPSRapidoFacade {
      */
     protected $_password;
 
+    protected $_services_names = [
+        3 => 'Международни куриерски услуги',
+        7 => 'Разнос3',
+        9 => 'КСК',
+    ];
+
     /**
      * @param string $url soap url
      * @param string $username User name
      * @param string $password User password
      */
-    function __construct($url, $username, $password) {
+    public function __construct($url, $username, $password) {
         @ini_set("soap.wsdl_cache_enabled", 0);
         $this->_url = $url;
         $this->_username = $username;
@@ -275,6 +281,9 @@ class EPSRapidoFacade {
 
         $result['id'] = $parameters['service'] . ($parameters['subservice'] ? '_' . $parameters['subservice'] : '');
         $result['name'] = !empty($services[$parameters['subservice']]) ? $services[$parameters['subservice']] : '';
+        if(empty($result['name']) && !empty($this->_services_names[$parameters['service']])) {
+            $result['name'] = $this->_services_names[$parameters['service']];
+        }
         return new ResponseQuote($result);
     }
 

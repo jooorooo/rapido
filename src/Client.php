@@ -234,12 +234,12 @@ class Client
         $quotes = [];
         foreach ($sub_services AS $sub) {
             try {
-                $parameters['subservice'] = Arr::last(explode('_', $sub));
+                $parameters['subservice'] = $sub;
                 $quotes[] = $this->getEPSFacade()->calculate($parameters, $services);
             } catch (RapidoException $e) {
                 $quotes[] = new ResponseQuote([
                     'id' => $sub,
-                    'name' => !empty($services[$parameters['subservice']]) ? $services[$parameters['subservice']] : '',
+                    'name' => !empty($services[$sub]) ? $services[$sub] : '',
                     'PERROR' => $e->getMessage()
                 ]);
             }
