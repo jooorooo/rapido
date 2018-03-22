@@ -152,7 +152,17 @@ var_dump($result); exit;
         return $list;
     }
 
-    public function calculate(array $parameters) {
+    /**
+     * Documentation : Чрез този метод клиентът може да провери каква би била цената на пратка (товарителница).
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param array $parameters
+     * @param array $services
+     * @return ResponseQuote
+     * @throws RapidoException
+     */
+    public function calculate(array $parameters, array $services = []) {
         $instance = new RapidoServiceCalculate($this->getDefaultParams());
         if(($result = $instance->calculate($this->getLoginParams(), $parameters)) === false) {
             /** @var SoapFault $exception */
@@ -160,17 +170,9 @@ var_dump($result); exit;
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        var_dump($result); exit;
-
-        $list = [];
-        foreach($result AS $courier) {
-            $list[] = new ResponseCouriers([
-                'DATA' => $courier['DATA'],
-                'LABEL' => $courier['LABEL']
-            ]);
-        }
-
-        return $list;
+        $result['id'] = $parameters['service'] . ($parameters['subservice'] ? '_' . $parameters['subservice'] : '');
+        $result['name'] = !empty($services[$parameters['subservice']]) ? $services[$parameters['subservice']] : '';
+        return new ResponseQuote($result);
     }
 
     /**

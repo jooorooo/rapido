@@ -10,11 +10,13 @@
 
 namespace Omniship\Rapido;
 
+use Omniship\Helper\Arr;
 use RapidoException;
 use EPSRapidoFacade;
 use ResponseResultCourierService;
 use ResponseCountry;
 use ResponseCouriers;
+use ResponseQuote;
 
 class Client
 {
@@ -90,12 +92,8 @@ class Client
      */
     public function getSubServices($serviceId)
     {
-        if(!is_null($this->services)) {
-            return $this->services;
-        }
-
         try {
-            return $this->services = $this->getEPSFacade()->getSubServices($serviceId);
+            return $this->getEPSFacade()->getSubServices($serviceId);
         } catch (RapidoException $e) {
             $this->error = $e->getMessage();
             return false;
@@ -109,6 +107,19 @@ class Client
     {
         try {
             return $this->getEPSFacade()->getCouriers();
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @return bool|ResponseCountry[]
+     */
+    public function getCountries()
+    {
+        try {
+            return $this->getEPSFacade()->getCountries();
         } catch (RapidoException $e) {
             $this->error = $e->getMessage();
             return false;
@@ -131,14 +142,50 @@ class Client
         }
     }
 
-    public function calculate(array $parameters)
+    /**
+     * @param array $parameters
+     * @param array|null $allowed_services
+     * @return ResponseQuote[]
+     */
+    public function calculate(array $parameters, array $allowed_services = null)
     {
-        try {
-            return $this->services = $this->getEPSFacade()->calculate($parameters);
-        } catch (RapidoException $e) {
-            $this->error = $e->getMessage();
-            return false;
+        $service_id = !empty($parameters['service']) ? $parameters['service'] : 0;
+        if(!$service_id) {
+            return [];
         }
+        if(!in_array($service_id, [3,7,9])) {
+            if (empty($allowed_services)) {
+                $allowed_services = array_map(function (ResponseResultCourierService $service) {
+                    return $service->getTypeId();
+                }, $this->getServices());
+            }
+            $sub_services = array_filter($allowed_services, function($id) use($service_id) {
+                return strpos($id, $service_id . '_') === 0;
+            });
+
+        } else {
+            $sub_services = [0];
+        }
+
+        $services = [];
+        foreach($this->getSubServices($service_id) AS $s) {
+            $services[$s->getTypeId()] = $s->getName();
+        }
+
+        $quotes = [];
+        foreach($sub_services AS $sub) {
+            try {
+                $parameters['subservice'] = Arr::last(explode('_', $sub));
+                $quotes[] =  $this->getEPSFacade()->calculate($parameters, $services);
+            } catch (RapidoException $e) {
+                $quotes[] = new ResponseQuote([
+                    'id' => $sub,
+                    'name' => !empty($services[$parameters['subservice']]) ? $services[$parameters['subservice']] : '',
+                    'PERROR' => $e->getMessage()
+                ]);
+            }
+        }
+        return $quotes;
     }
 
     /**
