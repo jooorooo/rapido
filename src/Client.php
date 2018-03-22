@@ -10,24 +10,19 @@
 
 namespace Omniship\Rapido;
 
-use Exception;
-use Rapido\EPSFacade;
-use Rapido\EPSSOAPInterfaceImpl;
-use ResultLogin;
-use Rapido\ResultCourierService;
+use RapidoException;
+use EPSRapidoFacade;
+use ResponseResultCourierService;
+use ResponseCountry;
+use ResponseCouriers;
 
 class Client
 {
 
     /**
-     * @var EPSFacade
+     * @var EPSRapidoFacade
      */
     protected $ePSFacade;
-
-    /**
-     * @var ResultLogin
-     */
-    protected $resultLogin;
 
     /**
      * @var string
@@ -54,6 +49,8 @@ class Client
 
     const VAT_PERCENTAGE = 20;
 
+    const BULGARIA = 100;
+
     public function __construct($username, $password, $test_mode)
     {
         $this->username = $username;
@@ -67,18 +64,11 @@ class Client
      */
     public function initialize()
     {
-        try {
-            @ini_set("soap.wsdl_cache_enabled", 0);
-            $this->ePSFacade = new EPSFacade(new EPSSOAPInterfaceImpl($this->test_mode ? static::SERVER_ADDRESS_DEMO : static::SERVER_ADDRESS_PROD, array('cache_wsdl' => WSDL_CACHE_NONE, 'trace' => 1)), $this->username, $this->password);
-            return true;
-        } catch (Exception $e) {
-            $this->error = $e->getMessage();
-            return false;
-        }
+        $this->ePSFacade = new EPSRapidoFacade($this->test_mode ? static::SERVER_ADDRESS_DEMO : static::SERVER_ADDRESS_PROD, $this->username, $this->password);
     }
 
     /**
-     * @return bool|ResultCourierService[]
+     * @return bool|ResponseResultCourierService[]
      */
     public function getServices()
     {
@@ -87,9 +77,8 @@ class Client
         }
 
         try {
-            /* @var $listServices ResultCourierService[] */
             return $this->services = $this->getEPSFacade()->getServices();
-        } catch (Exception $e) {
+        } catch (RapidoException $e) {
             $this->error = $e->getMessage();
             return false;
         }
@@ -97,7 +86,7 @@ class Client
 
     /**
      * @param integer $serviceId
-     * @return bool|ResultCourierService[]
+     * @return bool|ResponseResultCourierService[]
      */
     public function getSubServices($serviceId)
     {
@@ -106,9 +95,47 @@ class Client
         }
 
         try {
-            /* @var $listServices ResultCourierService[] */
             return $this->services = $this->getEPSFacade()->getSubServices($serviceId);
-        } catch (Exception $e) {
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @return bool|ResponseCouriers[]
+     */
+    public function getCouriers()
+    {
+        try {
+            return $this->getEPSFacade()->getCouriers();
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * @param $country_id
+     * @param null $start
+     * @param null $count
+     * @return bool|ResponseCity[]
+     */
+    public function getCities($country_id, $start = null, $count = null)
+    {
+        try {
+            return $this->getEPSFacade()->getCities($country_id, $start, $count);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    public function calculate(array $parameters)
+    {
+        try {
+            return $this->services = $this->getEPSFacade()->calculate($parameters);
+        } catch (RapidoException $e) {
             $this->error = $e->getMessage();
             return false;
         }
@@ -187,22 +214,10 @@ class Client
     }
 
     /**
-     * @return EPSFacade
+     * @return EPSRapidoFacade
      */
     public function getEPSFacade()
     {
         return $this->ePSFacade;
-    }
-
-    /**
-     * @param $language
-     * @return string
-     */
-    protected function _languageValidate($language)
-    {
-        if (!in_array(strtolower($language), ['bg', 'en'])) {
-            $language = 'en';
-        }
-        return strtoupper($language);
     }
 }

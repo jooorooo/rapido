@@ -121,110 +121,119 @@ class Gateway extends AbstractGateway
         return $this->createRequest(ShippingQuoteRequest::class, $this->getParameters() + $parameters);
     }
 
-    /**
-     * @param string $bol_id
-     * @return TrackingParcelRequest
-     */
-    public function trackingParcel($bol_id)
-    {
-        return $this->createRequest(TrackingParcelRequest::class, $this->setBolId($bol_id)->getParameters());
-    }
-
-    /**
-     * @param array $bol_ids
-     * @return TrackingParcelRequest
-     */
-    public function trackingParcels(array $bol_ids = [])
-    {
-        return $this->createRequest(TrackingParcelsRequest::class, $this->setBolId($bol_ids)->getParameters());
-    }
-
-    /**
-     * @param array|CreateBillOfLadingRequest $parameters
-     * @return CreateBillOfLadingRequest
-     */
-    public function createBillOfLading($parameters = [])
-    {
-        if ($parameters instanceof CreateBillOfLadingRequest) {
-            return $parameters;
-        }
-        if (!is_array($parameters)) {
-            $parameters = [];
-        }
-        return $this->createRequest(CreateBillOfLadingRequest::class, $this->getParameters() + $parameters);
-    }
-
-    /**
-     * @param $bol_id
-     * @param null $cancelComment
-     * @return CancelBillOfLadingRequest
-     */
-    public function cancelBillOfLading($bol_id, $cancelComment = null)
-    {
-        $this->setBolId((float)$bol_id)->setCancelComment($cancelComment);
-        return $this->createRequest(CancelBillOfLadingRequest::class, $this->getParameters());
-    }
-
-    /**
-     * @param $bol_id
-     * @param null|Carbon $date_start
-     * @param null|Carbon $date_end
-     * @return RequestCourierRequest
-     */
-//    public function requestCourier($bol_id, Carbon $date_start = null, Carbon $date_end = null)
+//    /**
+//     * @param string $bol_id
+//     * @return TrackingParcelRequest
+//     */
+//    public function trackingParcel($bol_id)
 //    {
-//        return $this->createRequest(RequestCourierRequest::class, $this->setBolId(array_map('floatval', (array)$bol_id))->setStartDate($date_start)->setEndDate($date_end)->getParameters());
+//        return $this->createRequest(TrackingParcelRequest::class, $this->setBolId($bol_id)->getParameters());
 //    }
-
-    /**
-     * @param $bol_id
-     * @return CodPaymentRequest
-     */
-    public function codPayment($bol_id)
-    {
-        return $this->createRequest(CodPaymentRequest::class, $this->setBolId($bol_id)->getParameters());
-    }
-
-    /**
-     * @param array $bol_ids
-     * @return CodPaymentRequest
-     */
-    public function codPayments(array $bol_ids)
-    {
-        return $this->createRequest(CodPaymentsRequest::class, $this->setBolId($bol_ids)->getParameters());
-    }
-
-    /**
-     * @param $bol_id
-     * @return GetPdfRequest
-     */
-    public function getPdf($bol_id)
-    {
-        return $this->createRequest(GetPdfRequest::class, $this->setBolId($bol_id)->getParameters());
-    }
-
-    /**
-     * @param Address $address
-     * @return ValidateAddressRequest
-     */
-    public function validateAddress(Address $address)
-    {
-        return $this->createRequest(ValidateAddressRequest::class, $this->setAddress($address)->getParameters());
-    }
-
-    /**
-     * @param array $parameters
-     * @param null|bool $test_mode
-     *      if set null get mode from currently instance
-     * @return ValidateCredentialsRequest
-     */
-    public function validateCredentials(array $parameters = [], $test_mode = null)
-    {
-        $instance = new Gateway();
-        $instance->initialize($parameters);
-        $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
-        return $instance->createRequest(ValidateCredentialsRequest::class, $instance->getParameters());
-    }
+//
+//    /**
+//     * @param array $bol_ids
+//     * @return TrackingParcelRequest
+//     */
+//    public function trackingParcels(array $bol_ids = [])
+//    {
+//        return $this->createRequest(TrackingParcelsRequest::class, $this->setBolId($bol_ids)->getParameters());
+//    }
+//
+//    /**
+//     * @param array|CreateBillOfLadingRequest $parameters
+//     * @return CreateBillOfLadingRequest
+//     */
+//    public function createBillOfLading($parameters = [])
+//    {
+//        if ($parameters instanceof CreateBillOfLadingRequest) {
+//            return $parameters;
+//        }
+//        if (!is_array($parameters)) {
+//            $parameters = [];
+//        }
+//        return $this->createRequest(CreateBillOfLadingRequest::class, $this->getParameters() + $parameters);
+//    }
+//
+//    /**
+//     * @param $bol_id
+//     * @param null $cancelComment
+//     * @return CancelBillOfLadingRequest
+//     */
+//    public function cancelBillOfLading($bol_id, $cancelComment = null)
+//    {
+//        $this->setBolId((float)$bol_id)->setCancelComment($cancelComment);
+//        return $this->createRequest(CancelBillOfLadingRequest::class, $this->getParameters());
+//    }
+//
+//    /**
+//     * @param $bol_id
+//     * @param null|Carbon $date_start
+//     * @param null|Carbon $date_end
+//     * @return RequestCourierRequest
+//     */
+////    public function requestCourier($bol_id, Carbon $date_start = null, Carbon $date_end = null)
+////    {
+////        return $this->createRequest(RequestCourierRequest::class, $this->setBolId(array_map('floatval', (array)$bol_id))->setStartDate($date_start)->setEndDate($date_end)->getParameters());
+////    }
+//
+//    /**
+//     * @param $bol_id
+//     * @return CodPaymentRequest
+//     */
+//    public function codPayment($bol_id)
+//    {
+//        return $this->createRequest(CodPaymentRequest::class, $this->setBolId($bol_id)->getParameters());
+//    }
+//
+//    /**
+//     * @param array $bol_ids
+//     * @return CodPaymentRequest
+//     */
+//    public function codPayments(array $bol_ids)
+//    {
+//        return $this->createRequest(CodPaymentsRequest::class, $this->setBolId($bol_ids)->getParameters());
+//    }
+//
+//    /**
+//     * @param $bol_id
+//     * @return GetPdfRequest
+//     */
+//    public function getPdf($bol_id)
+//    {
+//        return $this->createRequest(GetPdfRequest::class, $this->setBolId($bol_id)->getParameters());
+//    }
+//
+//    /**
+//     * @param Address $address
+//     * @return ValidateAddressRequest
+//     */
+//    public function validateAddress(Address $address)
+//    {
+//        return $this->createRequest(ValidateAddressRequest::class, $this->setAddress($address)->getParameters());
+//    }
+//
+//    /**
+//     * @param array $parameters
+//     * @param null|bool $test_mode
+//     *      if set null get mode from currently instance
+//     * @return ValidateCredentialsRequest
+//     */
+//    public function validateCredentials(array $parameters = [], $test_mode = null)
+//    {
+//        $instance = new Gateway();
+//        $instance->initialize($parameters);
+//        $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
+//        return $instance->createRequest(ValidateCredentialsRequest::class, $instance->getParameters());
+//    }
+//
+//    /**
+//     * @param Address $address
+//     * @return ValidatePostCodeRequest
+//     */
+//    public function validatePostCode(Address $address)
+//    {
+//        return $this->createRequest(ValidatePostCodeRequest::class, $this->setAddress($address)->getParameters());
+//    }
 
     /**
      * @return Client
@@ -244,15 +253,6 @@ class Gateway extends AbstractGateway
     public function trackingUrl($parcel_id)
     {
         return sprintf(static::TRACKING_URL, $parcel_id);
-    }
-
-    /**
-     * @param Address $address
-     * @return ValidatePostCodeRequest
-     */
-    public function validatePostCode(Address $address)
-    {
-        return $this->createRequest(ValidatePostCodeRequest::class, $this->setAddress($address)->getParameters());
     }
 
     /**
@@ -292,6 +292,6 @@ class Gateway extends AbstractGateway
      */
     public function supportMoneyTransfer()
     {
-        return true;
+        return false;
     }
 }

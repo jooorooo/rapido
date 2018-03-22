@@ -22,158 +22,18 @@ class ShippingQuoteRequest extends AbstractRequest
      */
     public function getData()
     {
-        $paramCalculation = new ParamCalculation();
-        if (is_null($login = $this->getClient()->getResultLogin())) {
-            return $paramCalculation;
-        }
+        $myPriceArray = array();
+        $myPriceArray['service']=1; // Ползва се getServices за да се видят ID-тата на услугите. В примера 1 е "бързи градски"
+        $myPriceArray['subservice']=18; // Ползва се getSubServices за да се видят ID-тата на  подуслугите (време за изпълнение). В примера 18 е "48 часа икономична"
+        $myPriceArray['fix_chas']=0; // 0 или 1 (Съответно ако е 1 ще се ползва фиксиран час, а ако е 0 няма да е със фиксиран час.
+        $myPriceArray['return_receipt']=0; // 0 или 1 (Съответно ако е 1 ще се иска обратна разписка, и 0 за без
+        $myPriceArray['return_doc']=0; // 0 или 1 (Съответно ако е 1 ще има обратни документи, и 0 за без
+        $myPriceArray['nal_platej']=50; // Сума за наложен платеж. Оставя се 0 ако е без наложен платеж. За десетичната запетая се използва символа точка "."
+        $myPriceArray['zastrahovka']=50; // Сума за застраховка. Оставя се 0 ако е без застраховка. За десетичната запетая се използва символа точка "."
+        $myPriceArray['teglo']=2.5; // Тегло. За десетичната запетая се използва символа точка "."
+        $myPriceArray['country_b']=100; // ID на държава(по ISO). Подава се само ако е международна пратка.
 
-        $convert = new Convert();
-
-        //if send out of bg disable cod & payer is sender
-        //Payer type (0=sender, 1=receiver or 2=third party)
-        $payer_type = ParamCalculation::PAYER_TYPE_SENDER;
-        if ($this->getPayer() == Consts::PAYER_RECEIVER) {
-            $payer_type = ParamCalculation::PAYER_TYPE_RECEIVER;
-        } elseif ($this->getPayer() == Consts::PAYER_OTHER) {
-            $payer_type = ParamCalculation::PAYER_TYPE_THIRD_PARTY;
-        }
-        $paramCalculation->setPayerType($payer_type);
-
-        if($payer_type == ParamCalculation::PAYER_TYPE_THIRD_PARTY) {
-            if(!empty($payer = $this->getOtherParameters('payer_id'))) {
-                $payer_id = $payer;
-            } else {
-                $payer_id = $login->getClientId();
-            }
-            $paramCalculation->setPayerRefId($payer_id);
-            $paramCalculation->setPayerRefPackingsId($payer_id);
-            if($this->getInsuranceAmount() > 0) {
-                $paramCalculation->setPayerRefInsuranceId($payer_id);
-            }
-        }
-
-        //Packings payer type (0=sender, 1=reciever or 2=third party)
-        $paramCalculation->setPayerTypePackings($payer_type);
-
-        //The date for shipment pick-up (the "time" component is ignored if it is allready passed or is overriden with 09:01). Default value is "today". (Required: no)
-        if (($taking_date = $this->getShipmentDate()) instanceof Carbon) {
-            $paramCalculation->setTakingDate($taking_date->timestamp);
-        } else {
-            $paramCalculation->setTakingDate(Carbon::now()->timestamp);
-        }
-        //If set to true, the "takingDate" field is not just to be validated, but the first allowed (following) date will be used instead (in compliance with the pick-up schedule etc.). (Required: no)
-        $paramCalculation->setAutoAdjustTakingDate(true);
-
-        if(!empty($sender_id = $this->getOtherParameters('sender_id', $login->getClientId()))) {
-            // if no sender address get information from profile
-            $paramCalculation->setSenderId($sender_id);
-        }
-        if (!empty($sender_address = $this->getSenderAddress())) {
-            //if send from office
-            if (!is_null($office = $sender_address->getOffice()) && $office->getId()) {
-                $paramCalculation->setWillBringToOfficeId($office->getId());
-            } elseif(!$paramCalculation->getSenderId()) {
-                $paramCalculation->setSenderCountryId($sender_address->getCountry()->getId());
-                $paramCalculation->setSenderSiteId($sender_address->getCity()->getId());
-                $paramCalculation->setSenderPostCode($sender_address->getPostCode());
-            }
-        }
-
-        $receiver_address = $this->getReceiverAddress();
-        if ($receiver_address && !is_null($office = $receiver_address->getOffice()) && $office->getId()) {
-            //ID of an office "to be called". Non-null and non-zero value indicates this picking as "to office". Otherwise "to address" is considered. If officeToBeCalledId is provided (non-null and non-zero), toBeCalled flag is considered "true". If officeToBeCalledId is set to 0, toBeCalled flag is considered "false".
-            $paramCalculation->setOfficeToBeCalledId($office->getId());
-            //Specifies if the shipment is "to be called". If this flag is true the shipment is considered "to office". Otherwise "to address" is considered.
-            $paramCalculation->setToBeCalled(true);
-        } else {
-            if ($receiver_address) {
-                $paramCalculation->setReceiverCountryId($receiver_address->getCountry()->getId());
-                $paramCalculation->setReceiverSiteId($receiver_address->getCity()->getId());
-                $paramCalculation->setReceiverPostCode($receiver_address->getPostCode());
-            }
-            $paramCalculation->setOfficeToBeCalledId(0);
-            $paramCalculation->setToBeCalled(false);
-        }
-
-        //Fixed time for delivery ("HHmm" format, i.e., the number "1315" means "13:15", "830" means "8:30" etc.) (Depending on the courier service, this property could be required, allowed or banned)
-        if (!is_null($priority_time = $this->getPriorityTime())) {
-            $paramCalculation->setFixedTimeDelivery($priority_time->format('Hi'));
-        }
-
-        //In some rare cases users might prefer the delivery to be deferred by a day or two. This parameter allows users to specify by how many (working) days they would like to postpone the shipment delivery.
-        if ($this->getOtherParameters('deffered_days')) {
-            $paramCalculation->setDeferredDeliveryWorkDays($this->getOtherParameters('deffered_days'));
-        }
-
-        if (($insurance = $this->getInsuranceAmount()) > 0) {
-            //Shipment insurance value (if the shipment is insured)
-            $paramCalculation->setAmountInsuranceBase($insurance);
-            //Specifies whether the shipment is fragile - necessary when the price of insurance is being calculated
-            $paramCalculation->setFragile((bool)$this->getOtherParameters('fragile'));
-            //Insurance payer type (0=sender, 1=reciever or 2=third party)
-            $paramCalculation->setPayerTypeInsurance($payer_type);
-        } else {
-            $paramCalculation->setFragile(false);
-        }
-
-        //Cash-on-Delivery (COD) amount
-
-        if (($cod = $this->getCashOnDeliveryAmount()) > 0) {
-            $paramCalculation->setAmountCodBase($cod);
-            //Flag indicating whether the shipping price should be included into the cash on delivery price.
-            $paramCalculation->setIncludeShippingPriceInCod((bool)$this->getOtherParameters('shipping_price_in_cod'));
-        } else {
-            $paramCalculation->setAmountCodBase(0);
-        }
-
-        //Specifies if the COD value is to be paid to a third party. Allowed only if the shipment has payerType = 2 (third party). (Required: no)
-        $paramCalculation->setPayCodToThirdParty(false);
-
-        //Parcels count (must be equal to the number of parcels described in List parcels)
-        $paramCalculation->setParcelsCount($this->getNumberOfPieces());
-        //Declared weight (the greater of "volume" and "real" weight values)
-        $paramCalculation->setWeightDeclared($convert->convertWeightUnit($this->getWeight(), $this->getWeightUnit()));
-        //Specifies whether the shipment only consists of documents
-        $paramCalculation->setDocuments($this->getIsDocuments());
-        //Specifies whether the shipment is palletized
-        $paramCalculation->setPalletized(false);
-
-        if ($special_delivery_id = $this->getOtherParameters('special_delivery_id')) {
-            //A special delivery ID
-            $paramCalculation->setSpecialDeliveryId($special_delivery_id);
-        }
-
-        //Check if specified office to be called is working. Default value - true
-        $paramCalculation->setCheckTBCOfficeWorkDay(true);
-
-        /** @var $pieces PieceBag */
-        $pieces = $this->getPieces();
-        if ($pieces->count()) {
-            $parcels = [];
-            $total_pieces = $pieces->count();
-            foreach ($pieces->all() as $row => $item) {
-                $parcel = new \ParamParcelInfo();
-                $parcel->setSeqNo($row + 1);
-                $parcel->setParcelId(-1);
-                if (($id = $item->getId())) {
-                    $parcel->setPackId($id);
-                }
-                $parcel->setWeight($convert->convertWeightUnit($item->getWeight(), $this->getWeightUnit()));
-                if ($item->getWidth() && $item->getDepth() && $item->getHeight()) {
-                    $size = new \Size();
-                    $size->setDepth($convert->convertLengthUnit($item->getDepth(), $this->getDimensionUnit()));
-                    $size->setHeight($convert->convertLengthUnit($item->getHeight(), $this->getDimensionUnit()));
-                    $size->setWidth($convert->convertLengthUnit($item->getWidth(), $this->getDimensionUnit()));
-                    $parcel->setSize($size);
-                } elseif (trim($name = $item->getName())&& in_array(strtoupper($name), ['XS','S','M','L']) && $total_pieces == 1) {
-                    $parcel->setPredefinedSize(strtoupper($name));
-                }
-                $parcels[] = $parcel;
-            }
-            $paramCalculation->setParcels($parcels);
-        }
-
-        return $paramCalculation;
+        return $myPriceArray;
     }
 
     public function sendData($data)
