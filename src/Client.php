@@ -204,6 +204,24 @@ class Client
     }
 
     /**
+     * @param $username
+     * @param $password
+     * @return bool
+     */
+    public function validateCredentials($username, $password)
+    {
+        $instance = new static($username, $password, $this->getTestMode());
+        if(is_array($instance->getCountries())) {
+            return true;
+        } else {
+            if(strpos($instance->getError(), 'Error login!') !== 0) {
+                $this->error = $instance->getError();
+            }
+            return false;
+        }
+    }
+
+    /**
      * @param $object_id
      * @return bool|ResponseMyObjects
      */

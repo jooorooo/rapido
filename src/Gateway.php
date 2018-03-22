@@ -202,38 +202,21 @@ class Gateway extends AbstractGateway
 //    {
 //        return $this->createRequest(GetPdfRequest::class, $this->setBolId($bol_id)->getParameters());
 //    }
-//
-//    /**
-//     * @param Address $address
-//     * @return ValidateAddressRequest
-//     */
-//    public function validateAddress(Address $address)
-//    {
-//        return $this->createRequest(ValidateAddressRequest::class, $this->setAddress($address)->getParameters());
-//    }
-//
-//    /**
-//     * @param array $parameters
-//     * @param null|bool $test_mode
-//     *      if set null get mode from currently instance
-//     * @return ValidateCredentialsRequest
-//     */
-//    public function validateCredentials(array $parameters = [], $test_mode = null)
-//    {
-//        $instance = new Gateway();
-//        $instance->initialize($parameters);
-//        $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
-//        return $instance->createRequest(ValidateCredentialsRequest::class, $instance->getParameters());
-//    }
-//
-//    /**
-//     * @param Address $address
-//     * @return ValidatePostCodeRequest
-//     */
-//    public function validatePostCode(Address $address)
-//    {
-//        return $this->createRequest(ValidatePostCodeRequest::class, $this->setAddress($address)->getParameters());
-//    }
+
+
+    /**
+     * @param array $parameters
+     * @param null|bool $test_mode
+     *      if set null get mode from currently instance
+     * @return ValidateCredentialsRequest
+     */
+    public function validateCredentials(array $parameters = [], $test_mode = null)
+    {
+        $instance = new Gateway();
+        $instance->initialize($parameters);
+        $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
+        return $instance->createRequest(ValidateCredentialsRequest::class, $instance->getParameters());
+    }
 
     /**
      * @return Client
