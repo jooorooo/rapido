@@ -254,7 +254,7 @@ class Order extends WsdlClass
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->cancellTovaritelnica($_loginparam,$_tovaritelnica));
+            return $this->setResult(self::getSoapClient()->cancellTovaritelnica($_loginparam, $_tovaritelnica));
         }
         catch(SoapFault $soapFault)
         {

@@ -11,7 +11,6 @@ namespace Rapido\Response;
  * @date 2018-03-09
  */
 
-use Omniship\Helper\Helper;
 use JsonSerializable;
 use ReflectionClass;
 
@@ -25,6 +24,13 @@ use ReflectionClass;
  */
 abstract class AbstractResponse implements JsonSerializable
 {
+
+    /**
+     * The cache of snake-cased words.
+     *
+     * @var array
+     */
+    protected static $snakeCache = [];
 
     /**
      * @return array
@@ -43,7 +49,7 @@ abstract class AbstractResponse implements JsonSerializable
                 }
                 $value = $tmp;
             }
-            $return[substr(Helper::snake($property->getName()), 1)] = $value;
+            $return[substr(static::snake($property->getName()), 1)] = $value;
 
         }
         return $return;
@@ -76,6 +82,40 @@ abstract class AbstractResponse implements JsonSerializable
     public function toJson($options = 0)
     {
         return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convert a string to snake case.
+     *
+     * @param  string  $value
+     * @param  string  $delimiter
+     * @return string
+     */
+    protected static function snake($value, $delimiter = '_')
+    {
+        $key = $value;
+
+        if (isset(static::$snakeCache[$key][$delimiter])) {
+            return static::$snakeCache[$key][$delimiter];
+        }
+
+        if (! ctype_lower($value)) {
+            $value = preg_replace('/\s+/u', '', $value);
+
+            $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1'.$delimiter, $value));
+        }
+
+        return static::$snakeCache[$key][$delimiter] = $value;
+    }
+    /**
+     * Convert the given string to lower-case.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected static function lower($value)
+    {
+        return mb_strtolower($value, 'UTF-8');
     }
 
 }

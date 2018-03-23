@@ -10,6 +10,8 @@ namespace Rapido;
  * @date 2018-03-09
  */
 
+use Rapido\Response\BillOfLading;
+use Rapido\Services\Order;
 use stdClass;
 use SoapFault;
 use Rapido\Services\Calculate;
@@ -349,9 +351,6 @@ class EPSFacade
 
     /**
      * Documentation : Чрез този метод клиентът може да провери каква би била цената на пратка (товарителница).
-     * @uses WsdlClass::getSoapClient()
-     * @uses WsdlClass::setResult()
-     * @uses WsdlClass::saveLastError()
      * @param array $parameters
      * @param array $services
      * @return Quote
@@ -372,6 +371,43 @@ class EPSFacade
             $result['name'] = $this->_services_names[$parameters['service']];
         }
         return new Quote($result);
+    }
+
+    /**
+     * Documentation : Стздаване на нова товарителница.
+     * @param array $parameters
+     * @return Quote
+     * @throws Exception
+     */
+    public function createOrder(array $parameters)
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->createOrder($this->getLoginParams(), $parameters)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Order::createOrder');
+            throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return new BillOfLading($result);
+    }
+
+    /**
+     * Documentation : Анулира товарителница
+     * @param $object_id
+     * @return boolean
+     * @throws Exception
+     */
+    public function cancelOrder($object_id)
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->cancelOrder($this->getLoginParams(), $object_id)) === false) {
+            /** @var SoapFault $exception */
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Order::cancelOrder'))) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
+
+        return $result;
     }
 
     /**
