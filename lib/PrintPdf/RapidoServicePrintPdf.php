@@ -15,7 +15,7 @@
  * @version 20150429-01
  * @date 2018-03-09
  */
-class RapidoServicePrint_pdf extends RapidoWsdlClass
+class RapidoServicePrintPdf extends RapidoWsdlClass
 {
     /**
      * Method to call the operation originally named print_pdf
@@ -28,11 +28,32 @@ class RapidoServicePrint_pdf extends RapidoWsdlClass
      * @param mixed $_pdfformat
      * @return string
      */
-    public function print_pdf($_loginparam,$_nomer,$_pdfformat)
+    public function printPdf($_loginparam,$_nomer,$_pdfformat)
     {
         try
         {
             return $this->setResult(self::getSoapClient()->print_pdf($_loginparam,$_nomer,$_pdfformat));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named print_int_pdf
+     * Documentation : Експорт на товарителница в PDF формат.
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param string $_nomer
+     * @return string
+     */
+    public function printInternationalPdf($_loginparam,$_nomer)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->print_int_pdf($_loginparam,$_nomer));
         }
         catch(SoapFault $soapFault)
         {

@@ -1,10 +1,26 @@
 <?php
 
+namespace Rapido\Response;
+
 /**
- * Instances of this class are returned as a result of Rapido web service calls for services
  * https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+ * File for class Country
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
-class ResponseCountry extends AbstractResponse
+
+/**
+ * This class stands for Country originally named Country
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+class Country extends AbstractResponse
 {
 
     /**

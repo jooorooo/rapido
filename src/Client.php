@@ -10,17 +10,16 @@
 
 namespace Omniship\Rapido;
 
-use Omniship\Helper\Arr;
 use RapidoException;
 use EPSRapidoFacade;
-use ResponseResultCourierService;
-use ResponseCountry;
-use ResponseCouriers;
-use ResponseQuote;
-use ResponseCity;
-use ResponseMyObjects;
-use ResponseStreet;
-use ResponseOffice;
+use Rapido\Response\Service;
+use Rapido\Response\Couriers;
+use Rapido\Response\Quote;
+use Rapido\Response\Country;
+use Rapido\Response\City;
+use Rapido\Response\Office;
+use Rapido\Response\Street;
+use Rapido\Response\MyObject;
 
 class Client
 {
@@ -44,10 +43,18 @@ class Client
      * @var bool
      */
     protected $test_mode;
-
+    /**
+     * @var string
+     */
     protected $error;
-
+    /**
+     * @var Service[]
+     */
     protected $services;
+    /**
+     * @var Service[][]
+     */
+    protected $sub_services = [];
 
     const SERVER_ADDRESS_DEMO = 'https://www.rapido.bg/testsystem/schema.wsdl';
 
@@ -74,7 +81,7 @@ class Client
     }
 
     /**
-     * @return bool|ResponseResultCourierService[]
+     * @return bool|Service[]
      */
     public function getServices()
     {
@@ -92,12 +99,16 @@ class Client
 
     /**
      * @param integer $serviceId
-     * @return bool|ResponseResultCourierService[]
+     * @return bool|Service[]
      */
     public function getSubServices($serviceId)
     {
+        if (!empty($this->sub_services[$serviceId])) {
+            return $this->sub_services[$serviceId];
+        }
+
         try {
-            return $this->getEPSFacade()->getSubServices($serviceId);
+            return $this->sub_services[$serviceId] = $this->getEPSFacade()->getSubServices($serviceId);
         } catch (RapidoException $e) {
             $this->error = $e->getMessage();
             return false;
@@ -105,7 +116,7 @@ class Client
     }
 
     /**
-     * @return bool|ResponseCouriers[]
+     * @return bool|Couriers[]
      */
     public function getCouriers()
     {
@@ -118,7 +129,7 @@ class Client
     }
 
     /**
-     * @return bool|ResponseCountry[]
+     * @return bool|Country[]
      */
     public function getCountries()
     {
@@ -134,7 +145,7 @@ class Client
      * @param $country_id
      * @param null $start
      * @param null $count
-     * @return bool|ResponseCity[]
+     * @return bool|City[]
      */
     public function getCities($country_id, $start = null, $count = null)
     {
@@ -147,10 +158,25 @@ class Client
     }
 
     /**
+     * @param $name
+     * @param $country_id
+     * @return bool|City[]
+     */
+    public function findCities($name, $country_id = 100)
+    {
+        try {
+            return $this->getEPSFacade()->findCities($name, $country_id);
+        } catch (RapidoException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
      * @param $city_id
      * @param null $start
      * @param null $count
-     * @return bool|ResponseStreet[]
+     * @return bool|Street[]
      */
     public function getStreets($city_id, $start = null, $count = null)
     {
@@ -164,7 +190,7 @@ class Client
 
     /**
      * @param $city_id
-     * @return bool|ResponseOffice[]
+     * @return bool|Office[]
      */
     public function getOffices($city_id)
     {
@@ -205,7 +231,7 @@ class Client
     }
 
     /**
-     * @return bool|ResponseMyObjects[]
+     * @return bool|MyObject[]
      */
     public function getMyObjects()
     {
@@ -237,7 +263,7 @@ class Client
 
     /**
      * @param $object_id
-     * @return bool|ResponseMyObjects
+     * @return bool|MyObject
      */
     public function getMyObjectInfo($object_id)
     {
@@ -251,7 +277,7 @@ class Client
 
     /**
      * @param array $parameters
-     * @return ResponseQuote[]
+     * @return Quote[]
      */
     public function calculate(array $parameters)
     {
@@ -269,7 +295,7 @@ class Client
                 $parameters['subservice'] = $sub;
                 $quotes[] = $this->getEPSFacade()->calculate($parameters, $services);
             } catch (RapidoException $e) {
-                $quotes[] = new ResponseQuote([
+                $quotes[] = new Quote([
                     'id' => $sub,
                     'name' => !empty($services[$sub]) ? $services[$sub] : '',
                     'PERROR' => $e->getMessage()

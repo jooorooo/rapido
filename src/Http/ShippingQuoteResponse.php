@@ -10,8 +10,7 @@ namespace Omniship\Rapido\Http;
 
 use Omniship\Common\ShippingQuoteBag;
 use Omniship\Consts;
-use ResponseQuote;
-use Carbon\Carbon;
+use Rapido\Response\Quote;
 
 class ShippingQuoteResponse extends AbstractResponse
 {
@@ -27,7 +26,7 @@ class ShippingQuoteResponse extends AbstractResponse
         }
 
         if(is_array($this->data)) {
-            /** @var ResponseQuote $service */
+            /** @var Quote $service */
             foreach($this->data AS $service) {
                 $result->push([
                     'id' => $service->getId(),

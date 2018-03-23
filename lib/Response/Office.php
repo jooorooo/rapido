@@ -1,11 +1,27 @@
 <?php
 
+namespace Rapido\Response;
+
+/**
+ * File for class Office
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+
 use Carbon\Carbon;
 
 /**
- * Instances of this class are returned as a result of Rapido web service calls for services
+ * This class stands for Office originally named Office
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
-class ResponseOffice extends AbstractResponse
+class Office extends AbstractResponse
 {
 
     /**
@@ -224,7 +240,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD1()
     {
@@ -232,7 +248,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD2()
     {
@@ -240,7 +256,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD3()
     {
@@ -248,7 +264,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD4()
     {
@@ -256,7 +272,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD5()
     {
@@ -264,7 +280,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD6()
     {
@@ -272,7 +288,7 @@ class ResponseOffice extends AbstractResponse
     }
 
     /**
-     * @return null|ResponseWorkingTime
+     * @return null|WorkingTime
      */
     public function getD7()
     {
@@ -281,7 +297,7 @@ class ResponseOffice extends AbstractResponse
 
     private function _parseWorkingTime($input) {
         if(preg_match('~^(([\d]{2})\:([\d]{2}))-(([\d]{2})\:([\d]{2}))$~', $input, $match)) {
-            return new ResponseWorkingTime(['from' => Carbon::createFromFormat('H:i', $match[1], 'Europe/Sofia'), 'to' => Carbon::createFromFormat('H:i', $match[4], 'Europe/Sofia')]);
+            return new WorkingTime(['from' => Carbon::createFromFormat('H:i', $match[1], 'Europe/Sofia'), 'to' => Carbon::createFromFormat('H:i', $match[4], 'Europe/Sofia')]);
         }
         return null;
     }

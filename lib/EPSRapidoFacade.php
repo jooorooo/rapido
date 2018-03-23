@@ -1,5 +1,17 @@
 <?php
 
+use Rapido\Services\Calculate;
+use Rapido\Services\Get;
+use Rapido\Services\Check;
+use Rapido\Response\Service;
+use Rapido\Response\Country;
+use Rapido\Response\City;
+use Rapido\Response\Office;
+use Rapido\Response\Street;
+use Rapido\Response\Couriers;
+use Rapido\Response\MyObject;
+use Rapido\Response\Quote;
+
 class EPSRapidoFacade
 {
 
@@ -42,16 +54,16 @@ class EPSRapidoFacade
 
     /**
      * Documentation : Този метод връща списък от предлагани услуги и подуслуги
-     * @return ResultCourierService[]
+     * @return Service[]
      * @throws RapidoException
      */
     public function getServices()
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
 
         if (($services = $instance->getServices($this->getLoginParams())) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getServices');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getServices');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
@@ -60,13 +72,13 @@ class EPSRapidoFacade
             $result = $this->getSubServices($arrStdServices['DATA']);
             if (count($result) > 0) {
                 foreach ($result AS $arrStdSubServices) {
-                    $list[] = new ResponseResultCourierService([
+                    $list[] = new Service([
                         'DATA' => implode('_', array($arrStdServices['DATA'], $arrStdSubServices->getTypeId())),
                         'LABEL' => implode(' - ', array($arrStdServices['LABEL'], $arrStdSubServices->getName()))
                     ]);
                 }
             } else {
-                $list[] = new ResponseResultCourierService($arrStdServices);
+                $list[] = new Service($arrStdServices);
             }
         }
 
@@ -76,21 +88,21 @@ class EPSRapidoFacade
     /**
      * Documentation : Този метод връща списък от време за изпълнение да дадена услуга
      * @param integer $serviceId
-     * @return ResultCourierService[]
+     * @return Service[]
      * @throws RapidoException
      */
     public function getSubServices($serviceId)
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getSubServices($this->getLoginParams(), $serviceId)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getSubServices');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getSubServices');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $service) {
-            $list[] = new ResponseResultCourierService($service);
+            $list[] = new Service($service);
         }
 
         return $list;
@@ -98,21 +110,21 @@ class EPSRapidoFacade
 
     /**
      * Documentation : Този метод връща списък на куриерите
-     * @return ResponseCouriers[]
+     * @return Couriers[]
      * @throws RapidoException
      */
     public function getCouriers()
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getSoapCouriers($this->getLoginParams())) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getSoapCouriers');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getSoapCouriers');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $courier) {
-            $list[] = new ResponseCouriers($courier);
+            $list[] = new Couriers($courier);
         }
 
         return $list;
@@ -120,21 +132,21 @@ class EPSRapidoFacade
 
     /**
      * Documentation : Този метод връща списък на държавите
-     * @return ResponseCountry[]
+     * @return Country[]
      * @throws RapidoException
      */
     public function getCountries()
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getCountries($this->getLoginParams())) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getSoapCouriers');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getSoapCouriers');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $country) {
-            $list[] = new ResponseCountry($country);
+            $list[] = new Country($country);
         }
 
         return $list;
@@ -145,21 +157,45 @@ class EPSRapidoFacade
      * @param $country_id
      * @param null $start
      * @param null $count
-     * @return ResponseCity[]
+     * @return City[]
      * @throws RapidoException
      */
     public function getCities($country_id = 100, $start = null, $count = null)
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
-        if (($result = $instance->getCityes($this->getLoginParams(), $country_id, $start, $count)) === false) {
+        $instance = new Get($this->getDefaultParams());
+        if (($result = $instance->getCities($this->getLoginParams(), $country_id, $start, $count)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getCityes');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getCities');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $city) {
-            $list[] = new ResponseCity($city);
+            $list[] = new City($city);
+        }
+
+        return $list;
+    }
+
+    /**
+     * Documentation : Връща списък с населени места, отговарящи на съответния филтър за търсене.
+     * @param $name
+     * @param int $country_id
+     * @return City[]
+     * @throws RapidoException
+     */
+    public function findCities($name, $country_id = 100)
+    {
+        $instance = new Get($this->getDefaultParams());
+        if (($result = $instance->findSites($this->getLoginParams(), $name, $country_id)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::findSites');
+            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        $list = [];
+        foreach ($result AS $city) {
+            $list[] = new City($city);
         }
 
         return $list;
@@ -170,21 +206,21 @@ class EPSRapidoFacade
      * @param string $city_id
      * @param null $start
      * @param null $count
-     * @return ResponseStreet[]
+     * @return Street[]
      * @throws RapidoException
      */
     public function getStreets($city_id, $start = null, $count = null)
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getStreets($this->getLoginParams(), $city_id, $start, $count)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getStreets');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getStreets');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $street) {
-            $list[] = new ResponseStreet($street);
+            $list[] = new Street($street);
         }
 
         return $list;
@@ -193,22 +229,22 @@ class EPSRapidoFacade
     /**
      * Documentation : Връща списък на офисите за населено място
      * @param $city_id
-     * @return ResponseOffice[]
+     * @return Office[]
      * @throws RapidoException
      */
     public function getOffices($city_id)
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getOfficesCity($this->getLoginParams(), $city_id)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getOfficesCity');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getOfficesCity');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $office) {
             if (!empty($office['DATA'])) {
-                $list[] = new ResponseOffice($office);
+                $list[] = new Office($office);
             }
         }
 
@@ -223,11 +259,12 @@ class EPSRapidoFacade
      */
     public function checkCityFixChas($city_id)
     {
-        $instance = new RapidoServiceCheck($this->getDefaultParams());
+        $instance = new Check($this->getDefaultParams());
         if (($result = $instance->checkCityFixChas($this->getLoginParams(), $city_id)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceCheck::checkCityFixChas');
-            throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Check::checkCityFixChas'))) {
+                throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
 
         return (int)$result;
@@ -241,10 +278,10 @@ class EPSRapidoFacade
      */
     public function checkSiteId($city_id)
     {
-        $instance = new RapidoServiceCheck($this->getDefaultParams());
+        $instance = new Check($this->getDefaultParams());
         if (($result = $instance->checkSiteId($this->getLoginParams(), $city_id)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceCheck::checkSiteId');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Check::checkSiteId');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
@@ -253,21 +290,21 @@ class EPSRapidoFacade
 
     /**
      * Documentation : Този метод връща списък на обектите на клиента
-     * @return ResponseMyObjects[]
+     * @return MyObject[]
      * @throws RapidoException
      */
     public function getMyObjects()
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getMyObjects($this->getLoginParams())) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getMyObjects');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getMyObjects');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         $list = [];
         foreach ($result AS $object) {
-            $list[] = new ResponseMyObjects($object);
+            $list[] = new MyObject($object);
         }
 
         return $list;
@@ -276,19 +313,19 @@ class EPSRapidoFacade
     /**
      * Documentation : Този метод връща информация за обекта на клиента
      * @param $object_id
-     * @return ResponseMyObjects
+     * @return MyObject
      * @throws RapidoException
      */
     public function getMyObjectInfo($object_id)
     {
-        $instance = new RapidoServiceGet($this->getDefaultParams());
+        $instance = new Get($this->getDefaultParams());
         if (($result = $instance->getMyObjectInfo($this->getLoginParams(), $object_id)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceGet::getMyObjectInfo');
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Get::getMyObjectInfo');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return new ResponseMyObjects($result);
+        return new MyObject($result);
     }
 
     /**
@@ -298,15 +335,15 @@ class EPSRapidoFacade
      * @uses RapidoWsdlClass::saveLastError()
      * @param array $parameters
      * @param array $services
-     * @return ResponseQuote
+     * @return Quote
      * @throws RapidoException
      */
     public function calculate(array $parameters, array $services = [])
     {
-        $instance = new RapidoServiceCalculate($this->getDefaultParams());
+        $instance = new Calculate($this->getDefaultParams());
         if (($result = $instance->calculate($this->getLoginParams(), $parameters)) === false) {
             /** @var SoapFault $exception */
-            $exception = $instance->getLastErrorForMethod('RapidoServiceCalculate::calculate');
+            $exception = $instance->getLastErrorForMethod('Rapido\Service\Calculate::calculate');
             throw new RapidoException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
@@ -315,7 +352,7 @@ class EPSRapidoFacade
         if (empty($result['name']) && !empty($this->_services_names[$parameters['service']])) {
             $result['name'] = $this->_services_names[$parameters['service']];
         }
-        return new ResponseQuote($result);
+        return new Quote($result);
     }
 
     /**

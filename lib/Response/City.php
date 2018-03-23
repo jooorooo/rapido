@@ -1,9 +1,25 @@
 <?php
 
+namespace Rapido\Response;
+
 /**
- * Instances of this class are returned as a result of Rapido web service calls for services
+ * File for class City
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
-class ResponseCity extends AbstractResponse
+
+/**
+ * This class stands for City originally named City
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+class City extends AbstractResponse
 {
 
     /**

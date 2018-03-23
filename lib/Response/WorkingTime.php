@@ -1,11 +1,27 @@
 <?php
 
+namespace Rapido\Response;
+
+/**
+ * File for class WorkingTime
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+
 use Carbon\Carbon;
 
 /**
- * Instances of this class are returned as a result of Rapido web service calls for services
+ * This class stands for WorkingTime originally named WorkingTime
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
-class ResponseWorkingTime extends AbstractResponse
+class WorkingTime extends AbstractResponse
 {
 
     /**

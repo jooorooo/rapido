@@ -1,14 +1,29 @@
 <?php
+
+namespace Rapido\Response;
+
 /**
- * Created by PhpStorm.
- * User: joro
- * Date: 29.6.2017 г.
- * Time: 13:40 ч.
+ * File for class AbstractResponse
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
 
 use Omniship\Helper\Helper;
+use JsonSerializable;
+use ReflectionClass;
 
-class AbstractResponse implements JsonSerializable
+/**
+ * This class stands for AbstractResponse originally named AbstractResponse
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+abstract class AbstractResponse implements JsonSerializable
 {
 
     /**

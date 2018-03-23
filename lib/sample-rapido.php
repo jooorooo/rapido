@@ -101,16 +101,6 @@ if($rapidoServiceSet->setPrintSettings($_loginparam,$_settings))
 else
     print_r($rapidoServiceSet->getLastError());
 
-/************************************
- * Example for RapidoServiceCalculate
- */
-$rapidoServiceCalculate = new RapidoServiceCalculate();
-// sample call for RapidoServiceCalculate::calculate()
-if($rapidoServiceCalculate->calculate($_loginparam,$_calculation))
-    print_r($rapidoServiceCalculate->getResult());
-else
-    print_r($rapidoServiceCalculate->getLastError());
-
 /*******************************
  * Example for RapidoServiceList
  */
@@ -134,9 +124,9 @@ else
 /************************************
  * Example for RapidoServicePrint_pdf
  */
-$rapidoServicePrint_pdf = new RapidoServicePrint_pdf();
+$rapidoServicePrint_pdf = new RapidoServicePrintPdf();
 // sample call for RapidoServicePrint_pdf::print_pdf()
-if($rapidoServicePrint_pdf->print_pdf($_loginparam,$_nomer,$_pdfformat))
+if($rapidoServicePrint_pdf->printPdf($_loginparam,$_nomer,$_pdfformat))
     print_r($rapidoServicePrint_pdf->getResult());
 else
     print_r($rapidoServicePrint_pdf->getLastError());
@@ -144,9 +134,9 @@ else
 /****************************************
  * Example for RapidoServicePrint_int_pdf
  */
-$rapidoServicePrint_int_pdf = new RapidoServicePrint_int_pdf();
+$rapidoServicePrint_int_pdf = new RapidoServicePrintPdf();
 // sample call for RapidoServicePrint_int_pdf::print_int_pdf()
-if($rapidoServicePrint_int_pdf->print_int_pdf($_loginparam,$_nomer))
+if($rapidoServicePrint_int_pdf->printInternationalPdf($_loginparam,$_nomer))
     print_r($rapidoServicePrint_int_pdf->getResult());
 else
     print_r($rapidoServicePrint_int_pdf->getLastError());

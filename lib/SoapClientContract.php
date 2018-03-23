@@ -1,5 +1,7 @@
 <?php
 
+namespace Rapido;
+
 /**
  * Created by PhpStorm.
  * User: joro

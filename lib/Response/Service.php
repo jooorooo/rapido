@@ -1,9 +1,25 @@
 <?php
 
+namespace Rapido\Response;
+
 /**
- * Instances of this class are returned as a result of Rapido web service calls for services
+ * File for class Service
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
  */
-class ResponseCouriers extends AbstractResponse
+
+/**
+ * This class stands for Service originally named Service
+ * @package Rapido
+ * @subpackage Response
+ * @author Georgi Nachev <jooorooo@gmail.com>
+ * @version 20150429-01
+ * @date 2018-03-09
+ */
+class Service extends AbstractResponse
 {
 
     /**

@@ -1,21 +1,29 @@
 <?php
+
+namespace Rapido\Services;
+
 /**
- * File for class RapidoServiceGet
+ * File for class Get
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
+
+use Rapido\WsdlClass;
+use SoapFault;
+use stdClass;
+
 /**
- * This class stands for RapidoServiceGet originally named Get
+ * This class stands for Get originally named Get
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class RapidoServiceGet extends RapidoWsdlClass
+class Get extends WsdlClass
 {
     /**
      * Method to call the operation originally named getServices
@@ -110,11 +118,33 @@ class RapidoServiceGet extends RapidoWsdlClass
      * @param string $_count
      * @return array
      */
-    public function getCityes($_loginparam,$_country,$_start,$_count)
+    public function getCities($_loginparam,$_country,$_start,$_count)
     {
         try
         {
             return $this->setResult(self::getSoapClient()->getCityes($_loginparam,$_country,$_start,$_count));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named listSites
+     * Documentation : Връща списък с населени места, отговарящи на съответния филтър за търсене.
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param string $_name
+     * @param int $_country
+     * @return array
+     */
+    public function findSites($_loginparam,$_name,$_country)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->listSites($_loginparam,$_name,$_country));
         }
         catch(SoapFault $soapFault)
         {

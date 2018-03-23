@@ -1,38 +1,45 @@
 <?php
+
+namespace Rapido\Services;
+
 /**
- * File for class RapidoServiceList
+ * File for class Calculate
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
+
+use Rapido\WsdlClass;
+use SoapFault;
+use stdClass;
+
 /**
- * This class stands for RapidoServiceList originally named List
+ * This class stands for Calculate originally named Calculate
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class RapidoServiceList extends RapidoWsdlClass
+class Calculate extends WsdlClass
 {
     /**
-     * Method to call the operation originally named listSites
-     * Documentation : Връща списък с населени места, отговарящи на съответния филтър за търсене.
+     * Method to call the operation originally named calculate
+     * Documentation : Чрез този метод клиентът може да провери каква би била цената на пратка (товарителница).
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_name
-     * @param int $_country
+     * @param array $_calculation
      * @return array
      */
-    public function listSites($_loginparam,$_name,$_country)
+    public function calculate($_loginparam,$_calculation)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->listSites($_loginparam,$_name,$_country));
+            return $this->setResult(self::getSoapClient()->calculate($_loginparam,$_calculation));
         }
         catch(SoapFault $soapFault)
         {

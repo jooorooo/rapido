@@ -10,7 +10,7 @@ namespace Omniship\Rapido\Http;
 
 use Omniship\Consts;
 use Omniship\Rapido\Client;
-use ResponseResultCourierService;
+use Rapido\Response\Service;
 use Omniship\Helper\Arr;
 
 class ShippingQuoteRequest extends AbstractRequest
@@ -55,7 +55,7 @@ class ShippingQuoteRequest extends AbstractRequest
         }
 
         if(empty($data['subservice']) && !empty($data['service']) && !in_array($data['service'], [3,7,9])) {
-            $data['subservice'] = array_map(function(ResponseResultCourierService $sub_service) {
+            $data['subservice'] = array_map(function(Service $sub_service) {
                 return $sub_service->getTypeId();
             }, $this->getClient()->getSubServices($data['service']));
         }

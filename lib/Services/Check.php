@@ -1,21 +1,29 @@
 <?php
+
+namespace Rapido\Services;
+
 /**
- * File for class RapidoServiceCheck
+ * File for class Check
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
+
+use Rapido\WsdlClass;
+use SoapFault;
+use stdClass;
+
 /**
- * This class stands for RapidoServiceCheck originally named Check
+ * This class stands for Check originally named Check
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class RapidoServiceCheck extends RapidoWsdlClass
+class Check extends WsdlClass
 {
     /**
      * Method to call the operation originally named checkOrders

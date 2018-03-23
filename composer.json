@@ -12,7 +12,8 @@
 
     "autoload": {
       "psr-4": {
-        "Omniship\\Rapido\\": "src"
+        "Omniship\\Rapido\\": "src",
+        "Rapido\\": "lib"
       },
       "classmap": [
         "lib"
