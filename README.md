@@ -10,7 +10,7 @@ Georgi Nachev
 
 
 Latest version is available on github at :
-    - https://github.com/jooorooo/omniship-rapido
+    - https://github.com/jooorooo/rapido
 
 
 ## License
@@ -31,7 +31,7 @@ You can use composer to use this library.
 ```php
 {
     "require": {
-		"simexis/omniship-rapido": "*"
+		"simexis/rapido": "*"
     }
 }
 ```
