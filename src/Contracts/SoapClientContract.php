@@ -1,6 +1,6 @@
 <?php
 
-namespace Rapido;
+namespace Rapido\Contracts;
 
 /**
  * Created by PhpStorm.
@@ -51,6 +51,7 @@ namespace Rapido;
  * @method array track_order_ref($_loginparam,$_nomer)
  * @method array track_order_ref_array($_loginparam,$_tarray)
  * @method array track_request($_loginparam,$_nomer)
+ * @method array checkOrdersStatus($_loginparam,$_nomera)
  */
 interface SoapClientContract
 {

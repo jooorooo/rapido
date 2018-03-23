@@ -2,6 +2,7 @@
 
 namespace Rapido;
 
+use Rapido\Contracts\SoapClientContract;
 use stdClass;
 use ArrayAccess;
 use Iterator;
@@ -37,7 +38,7 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
      * Constant to define the default WSDL URI
      * @var string
      */
-    const VALUE_WSDL_URL = 'https://www.rapido.bg/testsystem/schema.wsdl';
+    const VALUE_WSDL_URL = 'https://www.rapido.bg/rsystem2/schema.wsdl';
     /**
      * Option key to define WSDL login
      * @var string

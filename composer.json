@@ -1,23 +1,18 @@
 {
-    "name": "simexis/omniship-rapido",
+    "name": "simexis/rapido",
 
     "description": "PHP library to communicate with the rapido.bg Soap Services.",
 
     "require": {
-      "php": "^7",
-      "simexis/omniship": "dev-master"
+      "php": "^7"
     },
 
     "license": "LGPL-2.1",
 
     "autoload": {
       "psr-4": {
-        "Omniship\\Rapido\\": "src",
-        "Rapido\\": "lib"
-      },
-      "classmap": [
-        "lib"
-      ]
+        "Rapido\\": "src"
+      }
     },
 
 	"authors": [

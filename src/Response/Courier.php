@@ -19,7 +19,7 @@ namespace Rapido\Response;
  * @version 20150429-01
  * @date 2018-03-09
  */
-class Couriers extends AbstractResponse
+class Courier extends AbstractResponse
 {
 
     /**

@@ -1,38 +1,44 @@
 <?php
+
+namespace Rapido\Services;
+
 /**
- * File for class RapidoServicePrint_pdf
+ * File for class Invoice
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
+
+use Rapido\WsdlClass;
+use SoapFault;
+use stdClass;
+
 /**
- * This class stands for RapidoServicePrint_pdf originally named Print_pdf
+ * This class stands for Invoice originally named Invoice
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class RapidoServicePrintPdf extends RapidoWsdlClass
+class Invoice extends WsdlClass
 {
     /**
-     * Method to call the operation originally named print_pdf
-     * Documentation : Експорт на товарителница в PDF формат.
+     * Method to call the operation originally named getInvoiceType
+     * Documentation : Връща информация за типа на фактурата
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param mixed $_nomer
-     * @param mixed $_pdfformat
      * @return string
      */
-    public function printPdf($_loginparam,$_nomer,$_pdfformat)
+    public function getInvoiceType($_loginparam)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->print_pdf($_loginparam,$_nomer,$_pdfformat));
+            return $this->setResult(self::getSoapClient()->getInvoiceType($_loginparam));
         }
         catch(SoapFault $soapFault)
         {
@@ -40,20 +46,21 @@ class RapidoServicePrintPdf extends RapidoWsdlClass
         }
     }
     /**
-     * Method to call the operation originally named print_int_pdf
-     * Documentation : Експорт на товарителница в PDF формат.
+     * Method to call the operation originally named getInvoices
+     * Documentation : Връща информация за създадени фактури за период
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_nomer
-     * @return string
+     * @param string $_start
+     * @param string $_end
+     * @return array
      */
-    public function printInternationalPdf($_loginparam,$_nomer)
+    public function getInvoices($_loginparam,$_start,$_end)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->print_int_pdf($_loginparam,$_nomer));
+            return $this->setResult(self::getSoapClient()->getInvoices($_loginparam,$_start,$_end));
         }
         catch(SoapFault $soapFault)
         {
@@ -63,7 +70,7 @@ class RapidoServicePrintPdf extends RapidoWsdlClass
     /**
      * Returns the result
      * @see RapidoWsdlClass::getResult()
-     * @return string
+     * @return array|string
      */
     public function getResult()
     {

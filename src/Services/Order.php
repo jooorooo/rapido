@@ -3,7 +3,7 @@
 namespace Rapido\Services;
 
 /**
- * File for class Get
+ * File for class Order
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
@@ -16,70 +16,30 @@ use SoapFault;
 use stdClass;
 
 /**
- * This class stands for Get originally named Get
+ * This class stands for Order originally named Create_order
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class Get extends WsdlClass
+class Order extends WsdlClass
 {
     /**
-     * Method to call the operation originally named getServices
-     * Documentation : Този метод връща списък от предлагани услуги
+     * Method to call the operation originally named create_order
+     * Documentation : Стздаване на нова товарителница.
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @return array[]|array
-     */
-    public function getServices($_loginparam)
-    {
-        try
-        {
-            return $this->setResult(self::getSoapClient()->getServices($_loginparam));
-        }
-        catch(SoapFault $soapFault)
-        {
-            return !$this->saveLastError(__METHOD__,$soapFault);
-        }
-    }
-    /**
-     * Method to call the operation originally named getSubServices
-     * Documentation : Този метод връща списък от време за изпълнение да дадена услуга
-     * @uses RapidoWsdlClass::getSoapClient()
-     * @uses RapidoWsdlClass::setResult()
-     * @uses RapidoWsdlClass::saveLastError()
-     * @param stdClass $_loginparam
-     * @param integer $_serviceid
-     * @return array[]|array
-     */
-    public function getSubServices($_loginparam,$_serviceid)
-    {
-        try
-        {
-            return $this->setResult(self::getSoapClient()->getSubServices($_loginparam,$_serviceid));
-        }
-        catch(SoapFault $soapFault)
-        {
-            return !$this->saveLastError(__METHOD__,$soapFault);
-        }
-    }
-    /**
-     * Method to call the operation originally named getSoapCouriers
-     * Documentation : Този метод връща списък на куриерите
-     * @uses RapidoWsdlClass::getSoapClient()
-     * @uses RapidoWsdlClass::setResult()
-     * @uses RapidoWsdlClass::saveLastError()
-     * @param stdClass $_loginparam
+     * @param array $_order_info
      * @return array
      */
-    public function getSoapCouriers($_loginparam)
+    public function createOrder($_loginparam,$_order_info)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getSoapCouriers($_loginparam));
+            return $this->setResult(self::getSoapClient()->create_order($_loginparam,$_order_info));
         }
         catch(SoapFault $soapFault)
         {
@@ -87,19 +47,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getCountries
-     * Documentation : Този метод връща списък на държавите
+     * Method to call the operation originally named track_order
+     * Documentation : Тракинг на товарителница.
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
+     * @param string $_nomer
      * @return array
      */
-    public function getCountries($_loginparam)
+    public function trackOrder($_loginparam,$_nomer)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getCountries($_loginparam));
+            return $this->setResult(self::getSoapClient()->track_order($_loginparam,$_nomer));
         }
         catch(SoapFault $soapFault)
         {
@@ -107,22 +68,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getCityes
-     * Documentation : Този метод връща списък на градовете
+     * Method to call the operation originally named track_order_array
+     * Documentation : Тракинг на товарителници.
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_country
-     * @param string $_start
-     * @param string $_count
+     * @param array $_tarray
      * @return array
      */
-    public function getCities($_loginparam,$_country,$_start,$_count)
+    public function trackOrders($_loginparam, array $_tarray)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getCityes($_loginparam,$_country,$_start,$_count));
+            return $this->setResult(self::getSoapClient()->track_order_array($_loginparam,$_tarray));
         }
         catch(SoapFault $soapFault)
         {
@@ -130,21 +89,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named listSites
-     * Documentation : Връща списък с населени места, отговарящи на съответния филтър за търсене.
+     * Method to call the operation originally named track_order_ref
+     * Documentation : Тракинг на товарителница по реф номер.
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_name
-     * @param int $_country
+     * @param string $_nomer
      * @return array
      */
-    public function findSites($_loginparam,$_name,$_country)
+    public function trackOrderByRefNumber($_loginparam,$_nomer)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->listSites($_loginparam,$_name,$_country));
+            return $this->setResult(self::getSoapClient()->track_order_ref($_loginparam,$_nomer));
         }
         catch(SoapFault $soapFault)
         {
@@ -152,22 +110,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getStreets
-     * Documentation : Този метод връща списък на улиците
+     * Method to call the operation originally named track_order_ref_array
+     * Documentation : Тракинг на товарителници по референция.
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_siteid
-     * @param string $_start
-     * @param string $_count
+     * @param array $_tarray
      * @return array
      */
-    public function getStreets($_loginparam,$_siteid,$_start,$_count)
+    public function trackOrdersByRefNumber($_loginparam, array $_tarray)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getStreets($_loginparam,$_siteid,$_start,$_count));
+            return $this->setResult(self::getSoapClient()->track_order_ref_array($_loginparam,$_tarray));
         }
         catch(SoapFault $soapFault)
         {
@@ -175,20 +131,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getMyObjectInfo
-     * Documentation : Този метод връща списък на обектите на клиента
+     * Method to call the operation originally named track_request
+     * Documentation : Тракинг на поръчка
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_sendoffice
+     * @param string $_nomer
      * @return array
      */
-    public function getMyObjectInfo($_loginparam,$_sendoffice)
+    public function trackRequest($_loginparam,$_nomer)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getMyObjectInfo($_loginparam,$_sendoffice));
+            return $this->setResult(self::getSoapClient()->track_request($_loginparam, $_nomer));
         }
         catch(SoapFault $soapFault)
         {
@@ -196,19 +152,23 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getMyObjects
-     * Documentation : Този метод връща списък на обектите на клиента
+     * Method to call the operation originally named requestCurier
+     * Documentation : Заявка за куриер
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
+     * @param int $_broi
+     * @param float $_teglo
+     * @param string $_readiness
+     * @param int $_sendoffice
      * @return array
      */
-    public function getMyObjects($_loginparam)
+    public function requestCourier($_loginparam,$_broi,$_teglo,$_readiness,$_sendoffice)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getMyObjects($_loginparam));
+            return $this->setResult(self::getSoapClient()->requestCurier($_loginparam,$_broi,$_teglo,$_readiness,$_sendoffice));
         }
         catch(SoapFault $soapFault)
         {
@@ -216,20 +176,106 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getOfficesCity
-     * Documentation : Връща списък на офисите за населено място
+     * Method to call the operation originally named enrollOrders
+     * Documentation : Предване на една (или повече) товарителници на куриер
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_siteid
+     * @param array $_nomera
+     * @param string $_curier
      * @return array
      */
-    public function getOfficesCity($_loginparam,$_siteid)
+    public function enrollOrders($_loginparam, array $_nomera,$_curier)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getOfficesCity($_loginparam,$_siteid));
+            return $this->setResult(self::getSoapClient()->enrollOrders($_loginparam,$_nomera,$_curier));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named print_pdf
+     * Documentation : Експорт на товарителница в PDF формат.
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param mixed $_nomer
+     * @param mixed $_pdfformat
+     * @return string
+     */
+    public function printPdf($_loginparam,$_nomer,$_pdfformat)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->print_pdf($_loginparam,$_nomer,$_pdfformat));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named print_int_pdf
+     * Documentation : Експорт на товарителница в PDF формат.
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param string $_nomer
+     * @return string
+     */
+    public function printInternationalPdf($_loginparam,$_nomer)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->print_int_pdf($_loginparam,$_nomer));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named cancellTovaritelnica
+     * Documentation : Анулира товарителница
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param string $_tovaritelnica
+     * @return boolean
+     */
+    public function cancelOrder($_loginparam,$_tovaritelnica)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->cancellTovaritelnica($_loginparam,$_tovaritelnica));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named getNPInfo
+     * Documentation : Връща информация дали товарителница е изплатена
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param string $_tid
+     * @return array
+     */
+    public function getNPInfo($_loginparam,$_tid)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->getNPInfo($_loginparam,$_tid));
         }
         catch(SoapFault $soapFault)
         {
@@ -272,27 +318,6 @@ class Get extends WsdlClass
         try
         {
             return $this->setResult(self::getSoapClient()->getRazhodOrderInfoPMT($_loginparam,$_orderid));
-        }
-        catch(SoapFault $soapFault)
-        {
-            return !$this->saveLastError(__METHOD__,$soapFault);
-        }
-    }
-    /**
-     * Method to call the operation originally named getNPInfo
-     * Documentation : Връща информация дали товарителница е изплатена
-     * @uses RapidoWsdlClass::getSoapClient()
-     * @uses RapidoWsdlClass::setResult()
-     * @uses RapidoWsdlClass::saveLastError()
-     * @param stdClass $_loginparam
-     * @param string $_tid
-     * @return array
-     */
-    public function getNPInfo($_loginparam,$_tid)
-    {
-        try
-        {
-            return $this->setResult(self::getSoapClient()->getNPInfo($_loginparam,$_tid));
         }
         catch(SoapFault $soapFault)
         {
@@ -453,19 +478,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getInvoiceType
-     * Documentation : Връща информация за типа на фактурата
+     * Method to call the operation originally named checkOrders
+     * Documentation : Проверяване дали са доставени на една (или повече) товарителници
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @return string
+     * @param array $_nomera
+     * @return array
      */
-    public function getInvoiceType($_loginparam)
+    public function checkOrders($_loginparam, array $_nomera)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getInvoiceType($_loginparam));
+            return $this->setResult(self::getSoapClient()->checkOrders($_loginparam,$_nomera));
         }
         catch(SoapFault $soapFault)
         {
@@ -473,21 +499,20 @@ class Get extends WsdlClass
         }
     }
     /**
-     * Method to call the operation originally named getInvoices
-     * Documentation : Връща информация за създадени фактури за период
+     * Method to call the operation originally named checkOrdersStatus
+     * Documentation : Проверяване на текущ статус за една (или повече) товарителници
      * @uses RapidoWsdlClass::getSoapClient()
      * @uses RapidoWsdlClass::setResult()
      * @uses RapidoWsdlClass::saveLastError()
      * @param stdClass $_loginparam
-     * @param string $_start
-     * @param string $_end
+     * @param array $_nomera
      * @return array
      */
-    public function getInvoices($_loginparam,$_start,$_end)
+    public function checkOrdersStatus($_loginparam, array $_nomera)
     {
         try
         {
-            return $this->setResult(self::getSoapClient()->getInvoices($_loginparam,$_start,$_end));
+            return $this->setResult(self::getSoapClient()->checkOrdersStatus($_loginparam,$_nomera));
         }
         catch(SoapFault $soapFault)
         {
@@ -497,7 +522,7 @@ class Get extends WsdlClass
     /**
      * Returns the result
      * @see RapidoWsdlClass::getResult()
-     * @return array|string
+     * @return array
      */
     public function getResult()
     {

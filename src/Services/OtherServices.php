@@ -3,7 +3,7 @@
 namespace Rapido\Services;
 
 /**
- * File for class Check
+ * File for class OtherServices
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
@@ -16,36 +16,15 @@ use SoapFault;
 use stdClass;
 
 /**
- * This class stands for Check originally named Check
+ * This class stands for OtherServices originally named OtherServices
  * @package Rapido
  * @subpackage Services
  * @author Georgi Nachev <jooorooo@gmail.com>
  * @version 20150429-01
  * @date 2018-03-09
  */
-class Check extends WsdlClass
+class OtherServices extends WsdlClass
 {
-    /**
-     * Method to call the operation originally named checkOrders
-     * Documentation : Проверяване дали са доставени на една (или повече) товарителници
-     * @uses RapidoWsdlClass::getSoapClient()
-     * @uses RapidoWsdlClass::setResult()
-     * @uses RapidoWsdlClass::saveLastError()
-     * @param stdClass $_loginparam
-     * @param array $_nomera
-     * @return array
-     */
-    public function checkOrders($_loginparam,$_nomera)
-    {
-        try
-        {
-            return $this->setResult(self::getSoapClient()->checkOrders($_loginparam,$_nomera));
-        }
-        catch(SoapFault $soapFault)
-        {
-            return !$this->saveLastError(__METHOD__,$soapFault);
-        }
-    }
     /**
      * Method to call the operation originally named checkCityFixChas
      * Documentation : Връща информация дали може да се изпраща с фиксиран час за населено място
@@ -82,6 +61,27 @@ class Check extends WsdlClass
         try
         {
             return $this->setResult(self::getSoapClient()->check_siteid($_loginparam,$_siteid));
+        }
+        catch(SoapFault $soapFault)
+        {
+            return !$this->saveLastError(__METHOD__,$soapFault);
+        }
+    }
+    /**
+     * Method to call the operation originally named setPrintSettings
+     * Documentation : Този метод записва настройките за печат
+     * @uses RapidoWsdlClass::getSoapClient()
+     * @uses RapidoWsdlClass::setResult()
+     * @uses RapidoWsdlClass::saveLastError()
+     * @param stdClass $_loginparam
+     * @param array $_settings
+     * @return boolean
+     */
+    public function setPrintSettings($_loginparam,$_settings)
+    {
+        try
+        {
+            return $this->setResult(self::getSoapClient()->setPrintSettings($_loginparam,$_settings));
         }
         catch(SoapFault $soapFault)
         {
