@@ -11,6 +11,7 @@ namespace Rapido;
  */
 
 use Rapido\Response\BillOfLading;
+use Rapido\Response\Pdf;
 use Rapido\Services\Order;
 use stdClass;
 use SoapFault;
@@ -389,6 +390,29 @@ class EPSFacade
         }
 
         return new BillOfLading($result);
+    }
+
+    /**
+     * @param $bol_id
+     * @param $type
+     * @return Pdf
+     * @throws Exception
+     */
+    public function createPdf($bol_id, $type = 1)
+    {
+        $method = 'printPdf';
+        if(strtolower($type) == 'intentional') {
+            $method = 'printInternationalPdf';
+        }
+
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->$method($this->getLoginParams(), $bol_id, $type)) === false) {
+            /** @var SoapFault $exception */
+            $exception = $instance->getLastErrorForMethod('Rapido\Services\Order::' . $method);
+            throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return new Pdf($result);
     }
 
     /**
