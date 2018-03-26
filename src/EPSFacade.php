@@ -10,8 +10,10 @@ namespace Rapido;
  * @date 2018-03-09
  */
 
+use Omniship\Helper\Collection;
 use Rapido\Response\BillOfLading;
 use Rapido\Response\Pdf;
+use Rapido\Response\Tracking;
 use Rapido\Services\Order;
 use stdClass;
 use SoapFault;
@@ -437,7 +439,7 @@ class EPSFacade
     /**
      * Documentation : Тракинг на товарителница.
      * @param $bol_id
-     * @return boolean
+     * @return null|Tracking
      * @throws Exception
      */
     public function trackOrder($bol_id)
@@ -450,10 +452,19 @@ class EPSFacade
             }
         }
 
-        var_dump($result); exit;
+        if(!empty($result[0]['DATA']) && !in_array($result[0]['DATA'], ['N/A'])) {
+            return new Tracking($result[0]);
+        }
 
-        return $result;
+        return null;
     }
+
+    /**
+     * Documentation : Тракинг на товарителници.
+     * @param $bol_id
+     * @return Tracking[]
+     * @throws Exception
+     */
     public function trackOrders(array $bol_id)
     {
         $instance = new Order($this->getDefaultParams());
@@ -464,9 +475,14 @@ class EPSFacade
             }
         }
 
-        var_dump($result); exit;
+        $response = [];
+        foreach($result AS $group) {
+            if(!empty($group[0]['DATA']) && !in_array($group[0]['DATA'], ['N/A'])) {
+                $response[$group['AWB']] = new Tracking($group[0]);
+            }
+        }
 
-        return $result;
+        return $response;
     }
 
     /**

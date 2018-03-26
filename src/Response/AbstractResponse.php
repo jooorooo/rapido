@@ -39,6 +39,9 @@ abstract class AbstractResponse implements JsonSerializable
         $reflection = new ReflectionClass($this);
         $return = [];
         foreach($reflection->getProperties() AS $property) {
+            if(in_array($property->getName(), ['snakeCache'])) {
+                continue;
+            }
             $value = $this->{$property->getName()};
             if(is_object($value) && method_exists($value, 'toArray')) {
                 $value = $value->toArray();
