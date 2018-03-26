@@ -435,6 +435,41 @@ class EPSFacade
     }
 
     /**
+     * Documentation : Тракинг на товарителница.
+     * @param $bol_id
+     * @return boolean
+     * @throws Exception
+     */
+    public function trackOrder($bol_id)
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->trackOrder($this->getLoginParams(), $bol_id)) === false) {
+            /** @var SoapFault $exception */
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Order::trackOrder'))) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
+
+        var_dump($result); exit;
+
+        return $result;
+    }
+    public function trackOrders(array $bol_id)
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->trackOrders($this->getLoginParams(), $bol_id)) === false) {
+            /** @var SoapFault $exception */
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Order::trackOrders'))) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
+
+        var_dump($result); exit;
+
+        return $result;
+    }
+
+    /**
      * @return stdClass
      */
     protected function getLoginParams()
