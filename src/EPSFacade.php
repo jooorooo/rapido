@@ -13,6 +13,7 @@ namespace Rapido;
 use Omniship\Helper\Collection;
 use Rapido\Response\BillOfLading;
 use Rapido\Response\Pdf;
+use Rapido\Response\RequestCourier;
 use Rapido\Response\Tracking;
 use Rapido\Services\Order;
 use stdClass;
@@ -483,6 +484,29 @@ class EPSFacade
         }
 
         return $response;
+    }
+
+    /**
+     * Method to call the operation originally named requestCurier
+     * Documentation : Заявка за куриер
+     * @param int $count
+     * @param float $weight
+     * @param int $sendoffice
+     * @param string $readiness
+     * @return array
+     * @throws Exception
+     */
+    public function requestCourier($count, $weight, $sendoffice = 0, $readiness = '')
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->requestCourier($this->getLoginParams(), $count, $weight, $readiness, $sendoffice)) === false) {
+            /** @var SoapFault $exception */
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Order::requestCourier'))) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
+
+        return new RequestCourier($result);
     }
 
     /**
