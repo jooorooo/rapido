@@ -12,6 +12,7 @@ namespace Rapido;
 
 use Omniship\Helper\Collection;
 use Rapido\Response\BillOfLading;
+use Rapido\Response\CodPayment;
 use Rapido\Response\Pdf;
 use Rapido\Response\RequestCourier;
 use Rapido\Response\Tracking;
@@ -435,6 +436,25 @@ class EPSFacade
         }
 
         return $result;
+    }
+
+    /**
+     * Documentation : Връща информация дали товарителница е изплатена
+     * @param $bol_id
+     * @return boolean
+     * @throws Exception
+     */
+    public function codPayment($bol_id)
+    {
+        $instance = new Order($this->getDefaultParams());
+        if (($result = $instance->getNPInfo($this->getLoginParams(), $bol_id)) === false) {
+            /** @var SoapFault $exception */
+            if(!empty($exception = $instance->getLastErrorForMethod('Rapido\Services\Order::getNPInfo'))) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
+
+        return new CodPayment($result);
     }
 
     /**
