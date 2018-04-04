@@ -69,7 +69,7 @@ class EPSFacade
     ];
 
     /**
-     * @var array|Get[]|OtherServices[]|Order[]
+     * @var array|Get[]|OtherServices[]|Order[]|Calculate[]
      */
     protected static $_services = [];
 
@@ -395,7 +395,7 @@ class EPSFacade
     public function calculate(array $parameters, array $services = [])
     {
         if(empty(static::$_services['calculate'])) {
-            static::$_services['calculate'] = new Get($this->getDefaultParams());
+            static::$_services['calculate'] = new Calculate($this->getDefaultParams());
         }
         if (($result = static::$_services['calculate']->calculate($this->getLoginParams(), $parameters)) === false) {
             /** @var SoapFault $exception */
