@@ -71,7 +71,7 @@ class CodPayment extends AbstractResponse
         $this->_company_id = isset($result['COMPANY_ID']) ? trim($result['COMPANY_ID']) : null;
         $this->_razhoden_order = isset($result['RAZHODORDER']) ? trim($result['RAZHODORDER']) : null;
         $this->_ref_number = isset($result['CLIENT_REF1']) ? trim($result['CLIENT_REF1']) : null;
-        $this->_data = isset($result['DATA']) ? Carbon::createFromFormat('d-m-Y H:i:s', trim($result['DATA']), 'Europe/Sofia') : null;
+        $this->_data = isset($result['IZPLATENODATA']) ? Carbon::createFromFormat('Y-m-d H:i:s', trim($result['IZPLATENODATA']), 'Europe/Sofia') : null;
     }
 
     /**
