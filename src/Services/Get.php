@@ -12,7 +12,7 @@ namespace Rapido\Services;
  */
 
 use Rapido\WsdlClass;
-use SoapFault;
+use Exception;
 use stdClass;
 
 /**
@@ -40,7 +40,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getServices($_loginparam));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -61,7 +61,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getSubServices($_loginparam,$_serviceid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -81,7 +81,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getSoapCouriers($_loginparam));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -101,7 +101,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getCountries($_loginparam));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -124,7 +124,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getCityes($_loginparam,$_country,$_start,$_count));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -146,7 +146,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->listSites($_loginparam,$_name,$_country));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -169,7 +169,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getStreets($_loginparam,$_siteid,$_start,$_count));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -190,7 +190,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getMyObjectInfo($_loginparam,$_sendoffice));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -210,7 +210,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getMyObjects($_loginparam));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -231,7 +231,7 @@ class Get extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getOfficesCity($_loginparam,$_siteid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }

@@ -12,7 +12,7 @@ namespace Rapido\Services;
  */
 
 use Rapido\WsdlClass;
-use SoapFault;
+use Exception;
 use stdClass;
 
 /**
@@ -41,7 +41,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->create_order($_loginparam,$_order_info));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -62,7 +62,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->track_order($_loginparam,$_nomer));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -83,7 +83,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->track_order_array($_loginparam,$_tarray));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -104,7 +104,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->track_order_ref($_loginparam,$_nomer));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -125,7 +125,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->track_order_ref_array($_loginparam,$_tarray));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -146,7 +146,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->track_request($_loginparam, $_nomer));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -170,7 +170,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->requestCurier($_loginparam,$_broi,$_teglo,$_readiness,$_sendoffice));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -192,7 +192,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->enrollOrders($_loginparam,$_nomera,$_curier));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -214,7 +214,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->print_pdf($_loginparam,$_nomer,$_pdfformat));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -235,7 +235,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->print_int_pdf($_loginparam,$_nomer));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -256,7 +256,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->cancellTovaritelnica($_loginparam, $_tovaritelnica));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -277,7 +277,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getNPInfo($_loginparam,$_tid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -298,7 +298,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getRazhodOrderInfo($_loginparam,$_orderid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -319,7 +319,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getRazhodOrderInfoPMT($_loginparam,$_orderid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -340,7 +340,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getTovarInfo($_loginparam,$_tid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -361,7 +361,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getTovarCurrencyInfo($_loginparam,$_tid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -382,7 +382,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getTovarInfoTid($_loginparam,$_tid));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -406,7 +406,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getTurnover($_loginparam,$_id,$_pass,$_start,$_end));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -428,7 +428,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getReturnRedirect($_loginparam,$_start,$_end));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -450,7 +450,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getRazhodOrders($_loginparam,$_start,$_end));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -472,7 +472,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->getPrietivOfis($_loginparam,$_start,$_end));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -493,7 +493,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->checkOrders($_loginparam,$_nomera));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }
@@ -514,7 +514,7 @@ class Order extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->checkOrdersStatus($_loginparam,$_nomera));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }

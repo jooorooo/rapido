@@ -10,7 +10,6 @@ namespace Rapido;
  * @date 2018-03-09
  */
 
-use Omniship\Helper\Collection;
 use Rapido\Response\BillOfLading;
 use Rapido\Response\CodPayment;
 use Rapido\Response\Pdf;
@@ -18,7 +17,6 @@ use Rapido\Response\RequestCourier;
 use Rapido\Response\Tracking;
 use Rapido\Services\Order;
 use stdClass;
-use SoapFault;
 use Rapido\Services\Calculate;
 use Rapido\Services\Get;
 use Rapido\Services\OtherServices;
@@ -73,17 +71,32 @@ class EPSFacade
      */
     protected static $_services = [];
 
+    protected $soap_options = [];
+
+    protected $connection_timeout = 0;
+
+    protected $retries = 1;
+
+    protected $read_timeout = null;
+
     /**
      * @param string $url soap url
      * @param string $username User name
      * @param string $password User password
+     * @param array $soap_options
+     * @param int $connection_timeout
+     * @param int $retries
+     * @param null $read_timeout
      */
-    public function __construct($url, $username, $password)
+    public function __construct($url, $username, $password, $soap_options = [], $connection_timeout = 0, $retries = 1, $read_timeout = null)
     {
-        @ini_set("soap.wsdl_cache_enabled", 0);
         $this->_url = $url;
         $this->_username = $username;
         $this->_password = $password;
+        $this->soap_options = $soap_options;
+        $this->connection_timeout = $connection_timeout;
+        $this->retries = $retries;
+        $this->read_timeout = $read_timeout;
     }
 
     /**
@@ -97,7 +110,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($services = static::$_services['get']->getServices($this->getLoginParams())) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getServices');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -132,7 +145,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getSubServices($this->getLoginParams(), $serviceId)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getSubServices');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -156,7 +169,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getSoapCouriers($this->getLoginParams())) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getSoapCouriers');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -180,7 +193,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getCountries($this->getLoginParams())) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getCountries');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -207,7 +220,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getCities($this->getLoginParams(), $country_id, $start, $count)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getCities');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -233,7 +246,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->findSites($this->getLoginParams(), $name, $country_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::findSites');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -260,7 +273,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getStreets($this->getLoginParams(), $city_id, $start, $count)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getStreets');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -285,7 +298,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getOfficesCity($this->getLoginParams(), $city_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getOfficesCity');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -312,7 +325,7 @@ class EPSFacade
             static::$_services['other_services'] = new OtherServices($this->getDefaultParams());
         }
         if (($result = static::$_services['other_services']->checkCityFixChas($this->getLoginParams(), $city_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['other']->getLastErrorForMethod('Rapido\Services\OtherServices::checkCityFixChas'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -333,7 +346,7 @@ class EPSFacade
             static::$_services['other_services'] = new OtherServices($this->getDefaultParams());
         }
         if (($result = static::$_services['other_services']->checkSiteId($this->getLoginParams(), $city_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['other_services']->getLastErrorForMethod('Rapido\Services\OtherServices::checkSiteId');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -352,7 +365,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getMyObjects($this->getLoginParams())) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getMyObjects');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -377,7 +390,7 @@ class EPSFacade
             static::$_services['get'] = new Get($this->getDefaultParams());
         }
         if (($result = static::$_services['get']->getMyObjectInfo($this->getLoginParams(), $object_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['get']->getLastErrorForMethod('Rapido\Services\Get::getMyObjectInfo');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -397,8 +410,9 @@ class EPSFacade
         if(empty(static::$_services['calculate'])) {
             static::$_services['calculate'] = new Calculate($this->getDefaultParams());
         }
+        
         if (($result = static::$_services['calculate']->calculate($this->getLoginParams(), $parameters)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['calculate']->getLastErrorForMethod('Rapido\Service\Calculate::calculate');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -423,7 +437,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->createOrder($this->getLoginParams(), $parameters)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::createOrder');
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -448,7 +462,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->$method($this->getLoginParams(), $bol_id, $type)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             $exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::' . $method);
             throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -468,7 +482,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->cancelOrder($this->getLoginParams(), $object_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::cancelOrder'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -489,7 +503,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->getNPInfo($this->getLoginParams(), $bol_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::getNPInfo'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -510,7 +524,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->trackOrder($this->getLoginParams(), $bol_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::trackOrder'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -535,7 +549,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->trackOrders($this->getLoginParams(), $bol_id)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::trackOrders'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -567,7 +581,7 @@ class EPSFacade
             static::$_services['order'] = new Order($this->getDefaultParams());
         }
         if (($result = static::$_services['order']->requestCourier($this->getLoginParams(), $count, $weight, $readiness, $sendoffice)) === false) {
-            /** @var SoapFault $exception */
+            /** @var Exception $exception */
             if(!empty($exception = static::$_services['order']->getLastErrorForMethod('Rapido\Services\Order::requestCourier'))) {
                 throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -592,10 +606,15 @@ class EPSFacade
      */
     protected function getDefaultParams()
     {
-        return [
+        return array_merge($this->soap_options, [
             WsdlClass::WSDL_URL => $this->_url,
             WsdlClass::WSDL_TRACE => 1,
             WsdlClass::WSDL_CACHE_WSDL => 0,
-        ];
+            'connection_options' => [
+                'connection_timeout' => $this->connection_timeout,
+                'read_timeout' => $this->read_timeout,
+                'retries' => $this->retries,
+            ]
+        ]);
     }
 }

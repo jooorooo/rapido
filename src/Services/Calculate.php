@@ -12,7 +12,7 @@ namespace Rapido\Services;
  */
 
 use Rapido\WsdlClass;
-use SoapFault;
+use Exception;
 use stdClass;
 
 /**
@@ -41,7 +41,7 @@ class Calculate extends WsdlClass
         {
             return $this->setResult(self::getSoapClient()->calculate($_loginparam,$_calculation));
         }
-        catch(SoapFault $soapFault)
+        catch(Exception $soapFault)
         {
             return !$this->saveLastError(__METHOD__,$soapFault);
         }

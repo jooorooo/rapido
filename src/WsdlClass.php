@@ -10,7 +10,7 @@ use Countable;
 use SoapClient;
 use DOMDocument;
 use SoapHeader;
-use SoapFault;
+use Exception;
 
 /**
  * File for WsdlClass to communicate with SOAP service
@@ -191,6 +191,13 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
      * @var int
      */
     private $internArrayToIterateOffset;
+
+    protected $connection_timeout = 0;
+
+    protected $retries = 1;
+
+    protected $read_timeout = null;
+
     /**
      * Constructor
      * @uses WsdlClass::setLastError()
@@ -280,17 +287,35 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
         $defaultWsdlOptions = self::getDefaultWsdlOptions();
         foreach($defaultWsdlOptions as $optioName=>$optionValue)
         {
-            if(array_key_exists($optioName,$_wsdlOptions) && !empty($_wsdlOptions[$optioName]))
-                $wsdlOptions[str_replace('wsdl_','',$optioName)] = $_wsdlOptions[$optioName];
-            elseif(!empty($optionValue))
-                $wsdlOptions[str_replace('wsdl_','',$optioName)] = $optionValue;
+            if(array_key_exists($optioName,$_wsdlOptions) && !is_null($_wsdlOptions[$optioName])) {
+                $wsdlOptions[str_replace('wsdl_', '', $optioName)] = $_wsdlOptions[$optioName];
+            } elseif(!empty($optionValue)) {
+                $wsdlOptions[str_replace('wsdl_', '', $optioName)] = $optionValue;
+            }
         }
+
         if(array_key_exists(str_replace('wsdl_','',self::WSDL_URL),$wsdlOptions))
         {
             $wsdlUrl = $wsdlOptions[str_replace('wsdl_','',self::WSDL_URL)];
             unset($wsdlOptions[str_replace('wsdl_','',self::WSDL_URL)]);
             $soapClientClassName = self::getSoapClientClassName();
-            self::setSoapClient(new $soapClientClassName($wsdlUrl,$wsdlOptions));
+
+            $connection_timeout = 0;
+            $retries = 1;
+            $read_timeout = null;
+            if(isset($_wsdlOptions['connection_options']) && is_array($_wsdlOptions['connection_options'])) {
+                extract($_wsdlOptions['connection_options']);
+                unset($_wsdlOptions['connection_options']);
+            }
+
+            @ini_set("soap.wsdl_cache_enabled", 0);
+            if($soapClientClassName == '\Omniship\Rapido\Helper\SoapClient') {
+                $soapClient = new $soapClientClassName($wsdlUrl,$wsdlOptions, $connection_timeout, $retries, $read_timeout);
+            } else {
+                $soapClient = new $soapClientClassName($wsdlUrl,$wsdlOptions);
+            }
+
+            self::setSoapClient($soapClient);
         }
     }
     /**
@@ -304,10 +329,13 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
      */
     public static function getSoapClientClassName()
     {
-        if(class_exists('RapidoSoapClient') && is_subclass_of('RapidoSoapClient','SoapClient'))
+        if(class_exists('RapidoSoapClient') && is_subclass_of('RapidoSoapClient','SoapClient')) {
             return 'RapidoSoapClient';
-        else
+        } elseif(class_exists('\Omniship\Rapido\Helper\SoapClient') && is_subclass_of('\Omniship\Rapido\Helper\SoapClient','SoapClient')) {
+            return '\Omniship\Rapido\Helper\SoapClient';
+        } else {
             return 'SoapClient';
+        }
     }
     /**
      * Method returning all default options values
@@ -813,17 +841,17 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
     /**
      * Method saving the last error returned by the SoapClient
      * @param string $_methoName the method called when the error occurred
-     * @param SoapFault $_soapFault l'objet de l'erreur
+     * @param Exception $_soapFault l'objet de l'erreur
      * @return bool true|false
      */
-    protected function saveLastError($_methoName,SoapFault $_soapFault)
+    protected function saveLastError($_methoName,Exception $_soapFault)
     {
         return ($this->lastError[$_methoName] = $_soapFault);
     }
     /**
      * Method getting the last error for a certain method
      * @param string $_methoName method name to get error from
-     * @return SoapFault|null
+     * @return Exception|null
      */
     public function getLastErrorForMethod($_methoName)
     {
@@ -906,6 +934,37 @@ class WsdlClass extends stdClass implements ArrayAccess,Iterator,Countable
     {
         return ($this->internArrayToIterateIsArray = $_internArrayToIterateIsArray);
     }
+
+    public function setConnectionTimeout(int $value)
+    {
+        return ($this->connection_timeout = $value);
+    }
+
+    public function getConnectionTimeout()
+    {
+        return $this->connection_timeout;
+    }
+
+    public function setRetries(int $value)
+    {
+        return ($this->retries = $value);
+    }
+
+    public function getRetries()
+    {
+        return $this->retries;
+    }
+
+    public function setReadTimeout(int $value = null)
+    {
+        return ($this->read_timeout = $value);
+    }
+
+    public function getReadTimeout()
+    {
+        return $this->read_timeout;
+    }
+
     /**
      * Generic method setting value
      * @param string $_name property name to set
