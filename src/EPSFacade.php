@@ -413,8 +413,11 @@ class EPSFacade
         
         if (($result = static::$_services['calculate']->calculate($this->getLoginParams(), $parameters)) === false) {
             /** @var Exception $exception */
-            $exception = static::$_services['calculate']->getLastErrorForMethod('Rapido\Service\Calculate::calculate');
-            throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            if($exception = array_shift(static::$_services['calculate']->getLastError())) {
+                throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
+            } else {
+                throw new Exception('Error calculate!');
+            }
         }
 
         $result['id'] = $parameters['service'] . ($parameters['subservice'] ? '_' . $parameters['subservice'] : '');
